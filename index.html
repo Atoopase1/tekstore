@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technoid Shop — Phones, Laptops &amp; Gadgets</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&family=Exo+2:wght@400;700;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <nav>
+        <div class="logo">TEK<span>STORE</span></div>
+
+        <ul class="nav-links">
+            <li><a href="#hero" onclick="closeMobileNav()">Home</a></li>
+            <li><a href="#products" onclick="closeMobileNav()">Shop</a></li>
+            <li><a href="#about" onclick="closeMobileNav()">Services</a></li>
+            <li class="mobile-menu-btn"><button class="admin-btn" id="adminNavBtn"
+                    onclick="handleAdminNavClick()">Admin</button></li>
+        </ul>
+
+        <div class="nav-right" id="navRight">
+            <button class="auth-btn" id="loginNavBtn" onclick="openModal('authModal')"
+                style="display:none;">Login</button>
+            <button class="auth-btn" id="userNavBtn" onclick="openModal('userPanel')" style="display:none;"></button>
+            <button class="cart-btn" onclick="openModal('cartModal')" title="Shopping Cart">🛒<span class="cart-count"
+                    id="cartCount"></span></button>
+            <button class="theme-toggle" onclick="toggleTheme()">Light Mode</button>
+            <div class="hamburger" id="hamburgerMenu" onclick="toggleMobileNav()">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </nav>
+
+    <section id="hero">
+        <div class="hero-eyebrow">Ghana's Tech Hub</div>
+        <h1>Phones, Laptops<br>&amp; <span class="accent">Gadgets</span><br><span class="outline">Delivered.</span></h1>
+        <p class="hero-desc">Browse our curated collection of premium smartphones, laptops, and accessories. Negotiate
+            your price on WhatsApp and pay securely via MoMo.</p>
+        <div class="hero-btns">
+            <a href="#products" class="btn-accent">Browse Products</a>
+            <a href="https://wa.me/233544833571" target="_blank" class="btn-ghost">Chat on WhatsApp</a>
+        </div>
+        <div class="momo-badge">Pay via MoMo &nbsp;|&nbsp; <strong>0544833571</strong> &nbsp;|&nbsp; Negotiate on
+            WhatsApp</div>
+    </section>
+
+    <div class="filter-bar" id="filterBar">
+        <button class="filter-btn active" onclick="filterProducts('all', this)">All Products</button>
+        <button class="filter-btn" onclick="filterProducts('phone', this)">Phones</button>
+        <button class="filter-btn" onclick="filterProducts('laptop', this)">Laptops</button>
+        <button class="filter-btn" onclick="filterProducts('tablet', this)">Tablets</button>
+        <button class="filter-btn" onclick="filterProducts('accessory', this)">Accessories</button>
+        <button class="filter-btn" onclick="filterProducts('audio', this)">Audio</button>
+        <button class="filter-btn" onclick="filterProducts('other', this)">Other Gadgets</button>
+    </div>
+
+    <section id="products">
+        <div class="section-hd reveal">
+            <h2>Our <span>Collection</span></h2>
+            <span class="product-count" id="productCount">0 products</span>
+        </div>
+        <div class="products-grid" id="productsGrid"></div>
+    </section>
+
+    <section id="about">
+        <div class="inner">
+            <div class="about-grid">
+                <div class="about-text reveal">
+                    <h2>About <span>Technoid</span></h2>
+                    <p>We are your trusted tech destination in Ghana. From brand new smartphones to quality refurbished
+                        laptops, every product is verified before listing.</p>
+                    <p>Got a question? Negotiate your price, ask for bulk discounts, or request a spec check — all via
+                        WhatsApp before you pay. No pressure, no scams.</p>
+                    <div class="about-points">
+                        <div class="about-point">
+                            <div class="about-point-dot"></div>
+                            <div class="about-point-text"><strong>Negotiate Before You Buy</strong><span>Chat directly
+                                    on WhatsApp — 0544833571</span></div>
+                        </div>
+                        <div class="about-point">
+                            <div class="about-point-dot"></div>
+                            <div class="about-point-text"><strong>Pay via MoMo</strong><span>Secure mobile money payment
+                                    — 0544833571</span></div>
+                        </div>
+                        <div class="about-point">
+                            <div class="about-point-dot"></div>
+                            <div class="about-point-text"><strong>Verified Products</strong><span>All items checked and
+                                    described accurately</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="technoid-tile reveal">
+                    <h3>Technoid<span>Fix</span></h3>
+                    <p class="tagline">Need a repair, website, or logo? Book a professional service directly —
+                        electrical wiring, phone repairs, web design, Photoshop editing and more.</p>
+                    <div class="services-grid">
+                        <div class="service-item">Phone &amp; Laptop Repair <strong>Book a session</strong></div>
+                        <div class="service-item">Electrical Wiring <strong>Professional service</strong></div>
+                        <div class="service-item">Webpage Design <strong>Custom websites</strong></div>
+                        <div class="service-item">Photoshop &amp; Logo Design <strong>Creative work</strong></div>
+                    </div>
+                    <a href="https://technoidfix.netlify.app" target="_blank" class="book-btn">Book a Service at
+                        TechnoidFix</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-col">
+                <div class="f-logo">TEK<span>STORE</span></div>
+                <p class="f-desc">Ghana's trusted destination for premium phones, laptops &amp; gadgets. Negotiate on
+                    WhatsApp, pay via MoMo.</p>
+            </div>
+            <div class="footer-col">
+                <h4 class="f-heading">Quick Links</h4>
+                <ul class="f-links">
+                    <li><a href="#hero">Home</a></li>
+                    <li><a href="#products">Shop</a></li>
+                    <li><a href="#about">Services</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4 class="f-heading">Connect</h4>
+                <ul class="f-links">
+                    <li><a href="https://wa.me/233544833571" target="_blank">WhatsApp — 0544833571</a></li>
+                    <li><a href="https://www.facebook.com/share/185KdUEXfm/?mibextid=wwXIfr"
+                            target="_blank">Facebook</a></li>
+                    <li><a href="https://www.tiktok.com/@technoid_chris_atoopase?_r=1&amp;_t=ZS-94HTqvKrzL6"
+                            target="_blank">TikTok</a></li>
+                    <li><a href="https://www.linkedin.com/in/atoopase-christopher-technoid" target="_blank">LinkedIn</a>
+                    </li>
+                    <li><a href="https://technoidfix.netlify.app" target="_blank">TechnoidFix — Repairs &amp;
+                            Services</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <small>&copy; 2026 Technoid Store. All rights reserved.</small>
+        </div>
+    </footer>
+
+    <!-- Admin Options Modal -->
+    <div class="modal-overlay" id="adminOptionsModal">
+        <div class="modal" style="max-width:360px;text-align:center;">
+            <button class="modal-close" onclick="closeModal('adminOptionsModal')">&#x2715;</button>
+            <div style="font-size:2.2rem;margin-bottom:0.5rem;">🛡️</div>
+            <h3>Admin Mode Active</h3>
+            <p>You have full store access. Choose an action.</p>
+            <div style="display:flex;flex-direction:column;gap:0.8rem;">
+                <button class="btn-submit" style="width:100%;padding:0.9rem;" onclick="closeModal('adminOptionsModal')">
+                    🛡️ Stay as Admin
+                    <span style="display:block;font-size:0.7rem;font-weight:400;opacity:0.7;margin-top:2px;">Keep all
+                        admin powers active</span>
+                </button>
+                <button class="btn-submit" style="width:100%;padding:0.9rem;background:var(--accent2);"
+                    onclick="closeModal('adminOptionsModal'); openAddProductPanel()">
+                    ➕ Add Product
+                    <span style="display:block;font-size:0.7rem;font-weight:400;opacity:0.7;margin-top:2px;">Open the
+                        product upload form</span>
+                </button>
+                <button class="btn-submit" style="width:100%;padding:0.9rem;background:#6c3fc5;"
+                    onclick="openManageUsers()">
+                    👥 Manage Users
+                    <span style="display:block;font-size:0.7rem;font-weight:400;opacity:0.7;margin-top:2px;">View and
+                        delete registered users</span>
+                </button>
+                <button class="btn-cancel" style="width:100%;padding:0.9rem;border-color:var(--red);color:var(--red);"
+                    onclick="closeModal('adminOptionsModal'); exitAdmin()">
+                    🚪 Log Out Admin
+                    <span
+                        style="display:block;font-size:0.7rem;font-weight:400;opacity:0.7;margin-top:2px;color:var(--text3);">Remove
+                        all admin powers</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Add Product Panel (Admin) -->
+    <div class="modal-overlay" id="adminPanel">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModal('adminPanel')">&#x2715;</button>
+            <h3>Add New Product</h3>
+            <p>Upload a product image and fill in the details.</p>
+            <div class="form-group"><label>Product Name</label><input type="text" id="newName"
+                    placeholder="e.g. Samsung Galaxy A54" /></div>
+            <div class="form-group"><label>Category</label>
+                <select id="newCategory">
+                    <option value="phone">Phone</option>
+                    <option value="laptop">Laptop</option>
+                    <option value="tablet">Tablet</option>
+                    <option value="accessory">Accessory</option>
+                    <option value="audio">Audio</option>
+                    <option value="other">Others</option>
+                </select>
+            </div>
+            <div class="form-group"><label>Price (GHS)</label><input type="text" id="newPrice"
+                    placeholder="e.g. GHS 1,200" /></div>
+            <div class="form-group"><label>Short Description</label><textarea id="newDesc" rows="3"
+                    placeholder="Key specs or condition"></textarea></div>
+            <div class="form-group"><label>Stock Status</label>
+                <select id="newStock">
+                    <option value="1">In Stock</option>
+                    <option value="0">Out of Stock</option>
+                </select>
+            </div>
+            <div class="form-group"><label>Product Image</label><input type="file" id="newImage" accept="image/*"
+                    onchange="previewImg(this,'imagePreview')" />
+                <div class="img-preview-wrap"><img id="imagePreview" class="img-preview" /></div>
+            </div>
+            <div class="success-msg" id="addSuccess">Product added successfully!</div>
+            <div class="form-actions">
+                <button class="btn-submit" onclick="addProduct()">Add Product</button>
+                <button class="btn-cancel" onclick="closeModal('adminPanel')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Auth Modal (Login / Register) -->
+    <div class="modal-overlay" id="authModal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModal('authModal')">&#x2715;</button>
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">Login</button>
+                <button class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')">Register</button>
+            </div>
+            <div id="authLoginForm">
+                <h3>Welcome Back</h3>
+                <p>Login to post or manage your products.</p>
+                <div class="form-group"><label>Username</label><input type="text" id="loginUsername"
+                        placeholder="Your username" /></div>
+                <div class="form-group"><label>Password</label><input type="password" id="loginPassword"
+                        placeholder="Your password" onkeydown="if(event.key==='Enter')loginUser()" /></div>
+                <div class="error-msg" id="loginError">Invalid username or password.</div>
+                <div style="text-align:right;margin-top:0.5rem;">
+                    <a href="#"
+                        onclick="event.preventDefault();closeModal('authModal');openModal('forgotPasswordModal')"
+                        style="color:var(--accent);font-size:0.8rem;text-decoration:none;">Forgot Password?</a>
+                </div>
+                <div class="form-actions">
+                    <button class="btn-submit" onclick="loginUser()">Login</button>
+                    <button class="btn-cancel" onclick="closeModal('authModal')">Cancel</button>
+                </div>
+            </div>
+            <div id="authRegisterForm" style="display:none;">
+                <h3>Create Account</h3>
+                <p>Register to start selling on Technoid Store.</p>
+                <div class="form-group"><label>Full Name</label><input type="text" id="regName"
+                        placeholder="Your full name" /></div>
+                <div class="form-group"><label>Username</label><input type="text" id="regUsername"
+                        placeholder="Choose a username" /></div>
+                <div class="form-group"><label>Phone / MoMo Number</label><input type="text" id="regPhone"
+                        placeholder="e.g. 0544833571" /></div>
+                <div class="form-group"><label>Email Address</label><input type="email" id="regEmail"
+                        placeholder="your@email.com" /></div>
+                <div class="form-group"><label>Password</label><input type="password" id="regPassword"
+                        placeholder="Choose a password" /></div>
+                <div class="error-msg" id="regError">Registration failed. Try again.</div>
+                <div class="success-msg" id="regSuccess">Account created! You can now login.</div>
+                <div class="form-actions">
+                    <button class="btn-submit" onclick="registerUser()">Create Account</button>
+                    <button class="btn-cancel" onclick="closeModal('authModal')">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Sell Panel -->
+    <div class="modal-overlay" id="userPanel">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModal('userPanel')">&#x2715;</button>
+            <div class="profile-header">
+                <div class="avatar-wrap">
+                    <img id="avatarDisplay" class="avatar-img" style="display:none;" />
+                    <div id="avatarPlaceholder" class="avatar-placeholder">👤</div>
+                    <label class="avatar-upload" title="Change photo">📷<input type="file" accept="image/*"
+                            onchange="uploadAvatar(this)" /></label>
+                </div>
+                <div class="profile-info">
+                    <div class="profile-name" id="profileDisplayName"></div>
+                    <div class="profile-handle" id="profileHandle"></div>
+                </div>
+            </div>
+            <h3>Sell a Product</h3>
+            <div class="sell-notice">📦 List your item for sale. Buyers will pay you directly via MoMo.</div>
+            <div class="form-group"><label>Product Name</label><input type="text" id="sellName"
+                    placeholder="e.g. iPhone 14 Pro" /></div>
+            <div class="form-group"><label>Category</label>
+                <select id="sellCategory">
+                    <option value="phone">Phone</option>
+                    <option value="laptop">Laptop</option>
+                    <option value="tablet">Tablet</option>
+                    <option value="accessory">Accessory</option>
+                    <option value="audio">Audio</option>
+                    <option value="other">Others</option>
+                </select>
+            </div>
+            <div class="form-group"><label>Price</label><input type="text" id="sellPrice"
+                    placeholder="e.g. GHS 3,500" /></div>
+            <div class="form-group"><label>Description</label><textarea id="sellDesc" rows="3"
+                    placeholder="Condition, specs, etc."></textarea></div>
+            <div class="form-group"><label>Stock Status</label>
+                <select id="sellStock">
+                    <option value="1">In Stock</option>
+                    <option value="0">Out of Stock</option>
+                </select>
+            </div>
+            <div class="form-group"><label>Product Image</label><input type="file" id="sellImage" accept="image/*"
+                    onchange="previewImg(this,'sellImagePreview')" />
+                <div class="img-preview-wrap"><img id="sellImagePreview" class="img-preview" /></div>
+            </div>
+            <div class="success-msg" id="sellSuccess">Product listed successfully!</div>
+            <div class="form-actions">
+                <button class="btn-submit" onclick="userAddProduct()">List Product</button>
+                <button class="btn-cancel" onclick="logoutUser()">Logout</button>
+            </div>
+            <hr style="border:none;border-top:1px solid var(--border);margin:1.5rem 0 1rem;" />
+            <h3>My Listings</h3>
+            <div id="myListingsContainer" style="margin-bottom:1.5rem;"></div>
+        </div>
+    </div>
+
+
+
+
+    <!-- MoMo Modal -->
+    <div class="modal-overlay" id="momoModal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModal('momoModal')">&#x2715;</button>
+            <h3>Pay via MoMo</h3>
+            <p id="momoProductName" style="color:var(--accent);font-weight:600;margin-bottom:1rem;"></p>
+            <div class="momo-info-box">
+                <h4>MoMo Payment Details</h4>
+                <p id="momoDetails">Loading...</p>
+            </div>
+            <a id="momoWhatsappLink" href="#" target="_blank" class="btn-submit"
+                style="display:block;text-align:center;text-decoration:none;border-radius:8px;padding:0.85rem;font-weight:700;font-size:0.85rem;letter-spacing:0.1em;text-transform:uppercase;background:var(--accent);color:#000;margin-top:0.5rem;">Confirm
+                Order on WhatsApp</a>
+        </div>
+    </div>
+
+    <!-- Paystack Modal -->
+    <div class="modal-overlay" id="paystackModal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModal('paystackModal')">&#x2715;</button>
+            <h3>Pay with MoMo / Card</h3>
+            <p id="paystackProductLabel" style="color:var(--accent);font-weight:600;margin-bottom:0.5rem;"></p>
+            <div class="form-group"><label>Your Email</label><input type="email" id="paystackEmail"
+                    placeholder="you@example.com" /></div>
+            <div class="form-group"><label>Your Phone</label><input type="tel" id="paystackPhone"
+                    placeholder="e.g. 0244123456" /></div>
+            <div class="error-msg" id="paystackError">Please fill in all fields.</div>
+            <div class="form-actions">
+                <button class="btn-submit" onclick="initiatePaystack()">Pay Now</button>
+                <button class="btn-cancel" onclick="closeModal('paystackModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Receipt Modal -->
+    <div class="modal-overlay" id="receiptModal">
+        <div class="modal" style="max-width:580px;">
+            <button class="modal-close" onclick="closeModal('receiptModal')">&#x2715;</button>
+            <h3>&#x1F9FE; Payment Receipt</h3>
+            <p>Payment verified. Keep this receipt for your records.</p>
+            <div id="receiptContent"></div>
+            <div class="receipt-actions">
+                <button class="btn-print" onclick="printReceipt()">&#x1F5A8;&#xFE0F; Print</button>
+                <button class="btn-download" onclick="downloadReceipt()">&#x2B07;&#xFE0F; Download</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Not Owner Modal -->
+    <div class="modal-overlay" id="notOwnerModal">
+        <div class="modal" style="max-width:380px;text-align:center;">
+            <button class="modal-close" onclick="closeModal('notOwnerModal')">&#x2715;</button>
+            <div style="font-size:2.8rem;margin-bottom:0.8rem;">🚫</div>
+            <h3>Not Allowed</h3>
+            <p>You cannot delete someone else's product. You can only delete products <strong
+                    style="color:var(--text);">you posted</strong>.</p>
+            <button class="btn-submit" onclick="closeModal('notOwnerModal')">Got It</button>
+        </div>
+    </div>
+
+    <!-- Receipt Text Modal -->
+    <div class="modal-overlay" id="receiptTextModal">
+        <div class="modal" style="max-width:520px;">
+            <button class="modal-close" onclick="closeModal('receiptTextModal')">&#x2715;</button>
+            <h3>&#x1F4CB; Copy Your Receipt</h3>
+            <p>Press and hold the text below to copy, then paste into Notes or WhatsApp.</p>
+            <textarea id="receiptTextArea" rows="12" class="receipt-textarea" readonly></textarea>
+            <div class="form-actions" style="margin-top:1rem;">
+                <button class="btn-submit" onclick="selectReceiptText()">Select All</button>
+                <button class="btn-cancel" onclick="closeModal('receiptTextModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Confirm Modal -->
+    <div class="modal-overlay" id="customConfirmModal">
+        <div class="modal" style="max-width: 400px; text-align: center;">
+            <button class="modal-close" onclick="closeCustomConfirm()">&#x2715;</button>
+            <div style="font-size:2.5rem;margin-bottom:0.8rem;">❓</div>
+            <h3 id="confirmTitle">Confirm Action</h3>
+            <p id="confirmMessage" style="margin-bottom: 1.5rem;">Are you sure?</p>
+            <div class="form-actions" style="justify-content: center;">
+                <button class="btn-submit" id="confirmOkBtn">Confirm</button>
+                <button class="btn-cancel" onclick="closeCustomConfirm()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal (Admin) -->
+    <div class="modal-overlay" id="deleteModalAdmin">
+        <div class="modal" style="max-width: 400px; text-align: center;">
+            <button class="modal-close" onclick="closeModal('deleteModalAdmin')">&#x2715;</button>
+            <div style="font-size:2.5rem;margin-bottom:0.8rem;">🗑️</div>
+            <h3>Delete Product</h3>
+            <p style="margin-bottom: 1.5rem;">Are you sure you want to permanently delete this product? This action
+                cannot be undone.</p>
+            <div class="form-actions" style="justify-content: center;">
+                <button class="btn-submit" style="background:var(--red);color:#fff;"
+                    onclick="confirmDeleteAdmin()">Delete</button>
+                <button class="btn-cancel" onclick="closeModal('deleteModalAdmin')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal (User/Owner) -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal" style="max-width: 400px; text-align: center;">
+            <button class="modal-close" onclick="closeModal('deleteModal')">&#x2715;</button>
+            <div style="font-size:2.5rem;margin-bottom:0.8rem;">🗑️</div>
+            <h3>Delete Product</h3>
+            <p style="margin-bottom: 1.5rem;">Are you sure you want to permanently delete your listing? This action
+                cannot be undone.</p>
+            <div class="form-actions" style="justify-content: center;">
+                <button class="btn-submit" style="background:var(--red);color:#fff;"
+                    onclick="confirmDeleteUser()">Delete</button>
+                <button class="btn-cancel" onclick="closeModal('deleteModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manage Users Modal (Admin) -->
+    <div class="modal-overlay" id="manageUsersModal">
+        <div class="modal" style="max-width:500px;">
+            <button class="modal-close" onclick="closeModal('manageUsersModal')">&#x2715;</button>
+            <div style="font-size:2rem;margin-bottom:0.4rem;">👥</div>
+            <h3>Manage Users</h3>
+            <p>All registered users. You can delete a user and all their listings.</p>
+            <div id="userListContainer"></div>
+            <div style="margin-top:1.2rem;">
+                <button class="btn-cancel" style="width:100%;" onclick="closeModal('manageUsersModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div class="modal-overlay" id="forgotPasswordModal">
+        <div class="modal" style="max-width:420px;">
+            <button class="modal-close" onclick="closeModal('forgotPasswordModal')">&#x2715;</button>
+            <h3>Forgot Password?</h3>
+            <p>Enter your registered email. We'll send a temporary password.</p>
+            <div class="form-group"><label>Email Address</label><input type="email" id="resetEmail"
+                    placeholder="your@email.com" /></div>
+            <div class="error-msg" id="resetError">Error</div>
+            <div class="success-msg" id="resetSuccess">A temporary password has been sent to your email!</div>
+            <div class="form-actions">
+                <button class="btn-submit" onclick="sendPasswordReset()">Send Reset</button>
+                <button class="btn-cancel" onclick="closeModal('forgotPasswordModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Modal -->
+    <div class="modal-overlay" id="cartModal">
+        <div class="modal" style="max-width:480px;">
+            <button class="modal-close" onclick="closeModal('cartModal')">&#x2715;</button>
+            <h3>🛒 Your Cart</h3>
+            <p id="cartSubtitle">Review your items before checkout.</p>
+            <div id="cartItemsList"></div>
+            <div class="cart-total" id="cartTotalRow" style="display:none;">
+                <span>Total</span>
+                <span class="total-amount" id="cartTotalAmount">GHS 0</span>
+            </div>
+            <div class="form-actions" id="cartActions" style="display:none;flex-wrap:wrap;">
+                <button class="btn-submit" style="background:#FFC107;color:#000;" onclick="checkoutCartPaystack()">Pay
+                    MoMo / Card</button>
+                <button class="btn-submit" onclick="checkoutCart()">WhatsApp seller</button>
+                <button class="btn-cancel" onclick="clearCart()">Clear Cart</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- SDKs -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+    <!-- App -->
+    <script src="app.js"></script>
+</body>
+
+</html>
