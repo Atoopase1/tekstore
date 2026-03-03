@@ -8,8 +8,6 @@ const ADMIN_EMAIL = 'atoopase@gmail.com';
 let isAdmin = false, deleteTargetId = null, currentFilter = 'all', products = [], currentUser = null, paystackTargetProduct = null;
 let cart = JSON.parse(localStorage.getItem('technoid_cart') || '[]');
 
-emailjs.init('AoRAoMcyTW7ylvl7r');
-
 /* ── UI Helpers ── */
 function showToast(message, type = 'info') {
     const container = document.getElementById('toastContainer');
@@ -98,7 +96,7 @@ function openAddProductPanel() {
     openModal('adminPanel');
 }
 function promptAdminLogin() {
-    if (currentUser && currentUser.email === ADMIN_EMAIL) {
+    if (currentUser && currentUser.role === 'admin') {
         verifyAdmin();
     } else {
         showToast('You must be logged in as an administrator to access this area.', 'error');
@@ -121,7 +119,7 @@ function updateAdminUI() {
     const btn = document.getElementById('adminNavBtn');
     if (isAdmin) {
         btn.classList.add('admin-active');
-        btn.innerHTML = '🛡️ Admin <span style="opacity:0.6;font-size:0.65rem;">▼</span>';
+        btn.innerHTML = ' Admin <span style="opacity:0.6;font-size:0.65rem;">▼</span>';
         btn.title = 'Click for Admin Options';
     } else {
         btn.classList.remove('admin-active');
@@ -142,6 +140,10 @@ function previewImg(input, previewId) {
 
 /* ── Products CRUD ── */
 async function loadProducts() {
+    const grid = document.getElementById('productsGrid');
+    if (grid && products.length === 0) {
+        grid.innerHTML = '<div class="no-products"><div class="loading-spinner"></div><h3>Loading Collection...</h3><p>Fetching products securely.</p></div>';
+    }
     const { data, error } = await sb.from('products').select('*').order('created_at', { ascending: false });
     if (error) { console.error('Load error:', error); return }
     products = data || [];
@@ -216,35 +218,65 @@ async function registerUser() {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { errEl.textContent = 'Please enter a valid email address.'; errEl.style.display = 'block'; return }
     const { data: existing } = await sb.from('users').select('id').eq('username', username).maybeSingle();
     if (existing) { errEl.textContent = 'Username already taken.'; errEl.style.display = 'block'; return }
-    const { count } = await sb.from('users').select('*', { count: 'exact', head: true });
-    const newUserId = (count || 0) + 1;
-    const pwHash = btoa(unescape(encodeURIComponent(password + '_ts2026')));
-    const { error } = await sb.from('users').insert([{ user_id: newUserId, name, username, phone, email, pw_hash: pwHash }]);
-    if (error) { errEl.textContent = 'Error: ' + error.message; errEl.style.display = 'block'; return }
+    // Find the max existing user_id safely instead of counting
+    const { data: maxIdData } = await sb.from('users').select('user_id').order('user_id', { ascending: false }).limit(1).maybeSingle();
+    const newUserId = (maxIdData && maxIdData.user_id ? parseInt(maxIdData.user_id) : 0) + 1;
+
+    // Supabase Auth SignUp
+    const { data: authData, error: authError } = await sb.auth.signUp({
+        email: email,
+        password: password
+    });
+    if (authError) { errEl.textContent = 'Auth Error: ' + authError.message; errEl.style.display = 'block'; return }
+
+    const { error } = await sb.from('users').insert([{ user_id: newUserId, name, username, phone, email, auth_id: authData.user.id }]);
+    if (error) {
+        errEl.textContent = 'Error: ' + error.message; errEl.style.display = 'block';
+        // Cleanup the Auth user if profile insert failed due to constraint
+        // (This lets them try again without 'User already registered' error)
+        console.warn('Profile insertion failed. Note: User cannot be fully deleted client-side. Please check database constraint.');
+        return;
+    }
     sucEl.style.display = 'block';
     setTimeout(() => { sucEl.style.display = 'none'; switchAuthTab('login'); document.getElementById('loginUsername').value = username }, 1500);
 }
 async function loginUser() {
-    const username = document.getElementById('loginUsername').value.trim();
+    const usernameOrEmail = document.getElementById('loginUsername').value.trim();
     const password = document.getElementById('loginPassword').value;
     const errEl = document.getElementById('loginError');
     errEl.style.display = 'none';
-    if (!username || !password) { errEl.textContent = 'Please enter username and password.'; errEl.style.display = 'block'; return }
-    const pwHash = btoa(unescape(encodeURIComponent(password + '_ts2026')));
-    const { data: user, error } = await sb.from('users').select('*').eq('username', username).eq('pw_hash', pwHash).maybeSingle();
-    if (error || !user) { errEl.style.display = 'block'; return }
-    currentUser = { id: user.id, user_id: user.user_id, username: user.username, name: user.name, phone: user.phone, email: user.email || '', avatar: user.avatar || '' };
+    if (!usernameOrEmail || !password) { errEl.textContent = 'Please enter username or email and password.'; errEl.style.display = 'block'; return }
+
+    let loginEmail = usernameOrEmail;
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(usernameOrEmail)) {
+        const { data: u } = await sb.from('users').select('email').eq('username', usernameOrEmail).maybeSingle();
+        if (u && u.email) loginEmail = u.email;
+    }
+
+    const { data: authData, error: authErr } = await sb.auth.signInWithPassword({
+        email: loginEmail,
+        password: password
+    });
+    if (authErr) { errEl.textContent = 'Invalid credentials.'; errEl.style.display = 'block'; return }
+
+    const { data: user, error } = await sb.from('users').select('*').eq('auth_id', authData.user.id).maybeSingle();
+    if (error || !user) { errEl.textContent = 'User profile not found in database.'; errEl.style.display = 'block'; return }
+    currentUser = { id: user.id, user_id: user.user_id, username: user.username, name: user.name, phone: user.phone, email: user.email || '', avatar: user.avatar || '', role: user.role || 'user' };
     localStorage.setItem('technoid_user', JSON.stringify(currentUser));
     closeModal('authModal');
     updateAuthUI();
     renderProducts();
 }
-function logoutUser() {
+async function logoutUser() {
+    await sb.auth.signOut();
     currentUser = null;
     localStorage.removeItem('technoid_user');
+    isAdmin = false;
+    sessionStorage.removeItem('technoid_admin');
     closeModal('userPanel');
     document.getElementById('adminNavBtn').style.display = 'none';
     updateAuthUI();
+    updateAdminUI();
     renderProducts();
 }
 function updateAuthUI() {
@@ -261,7 +293,7 @@ function updateAuthUI() {
         const avatarPh = document.getElementById('avatarPlaceholder');
         if (currentUser.avatar) { avatarImg.src = currentUser.avatar; avatarImg.style.display = 'block'; avatarPh.style.display = 'none'; }
         else { avatarImg.style.display = 'none'; avatarPh.style.display = ''; }
-        adminBtn.style.display = (currentUser.email === ADMIN_EMAIL) ? 'inline-block' : 'none';
+        adminBtn.style.display = (currentUser.role === 'admin') ? 'inline-block' : 'none';
     } else {
         loginBtn.style.display = '';
         userBtn.style.display = 'none';
@@ -281,9 +313,17 @@ async function uploadAvatar(input) {
     };
     reader.readAsDataURL(input.files[0]);
 }
-function restoreSession() {
-    try { const s = localStorage.getItem('technoid_user'); if (s) currentUser = JSON.parse(s) } catch (e) { }
-    if (sessionStorage.getItem('technoid_admin') === '1' && currentUser && currentUser.email === ADMIN_EMAIL) {
+async function restoreSession() {
+    const { data: { session } } = await sb.auth.getSession();
+    if (session) {
+        const { data: user } = await sb.from('users').select('*').eq('auth_id', session.user.id).maybeSingle();
+        if (user) {
+            currentUser = { id: user.id, user_id: user.user_id, username: user.username, name: user.name, phone: user.phone, email: user.email || '', avatar: user.avatar || '', role: user.role || 'user' };
+            localStorage.setItem('technoid_user', JSON.stringify(currentUser));
+        } else { currentUser = null; }
+    } else { currentUser = null; }
+
+    if (sessionStorage.getItem('technoid_admin') === '1' && currentUser && currentUser.role === 'admin') {
         isAdmin = true;
     }
     updateAuthUI();
@@ -359,7 +399,7 @@ function renderMyListings() {
     container.innerHTML = myProducts.map(p => {
         const inStock = p.in_stock !== 0;
         return '<div style="display:flex;align-items:center;gap:.8rem;padding:.7rem 0;border-bottom:1px solid var(--border);">' +
-            (p.image ? '<img src="' + p.image + '" style="width:44px;height:44px;border-radius:6px;object-fit:cover;background:var(--card2);flex-shrink:0;" />' : '<div style="width:44px;height:44px;border-radius:6px;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:.7rem;color:var(--text3);flex-shrink:0;">📦</div>') +
+            (p.image ? '<img src="' + p.image + '" style="width:44px;height:44px;border-radius:6px;object-fit:cover;background:var(--card2);flex-shrink:0;" />' : '<div style="width:44px;height:44px;border-radius:6px;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:.7rem;color:var(--text3);flex-shrink:0;"></div>') +
             '<div style="flex:1;min-width:0;">' +
             '<div style="font-size:.85rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + p.name + '</div>' +
             '<div style="font-size:.78rem;color:var(--accent);">' + p.price + '</div>' +
@@ -627,21 +667,15 @@ async function sendPasswordReset() {
     errEl.style.display = 'none'; sucEl.style.display = 'none';
     if (!email) { errEl.textContent = 'Please enter your email.'; errEl.style.display = 'block'; return }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { errEl.textContent = 'Please enter a valid email address.'; errEl.style.display = 'block'; return }
-    const { data: user, error } = await sb.from('users').select('*').eq('email', email).maybeSingle();
-    if (error || !user) { errEl.textContent = 'No account found with that email.'; errEl.style.display = 'block'; return }
-    const tempPw = 'Temp' + Math.random().toString(36).substr(2, 6).toUpperCase();
-    const newHash = btoa(unescape(encodeURIComponent(tempPw + '_ts2026')));
-    const { error: updateErr } = await sb.from('users').update({ pw_hash: newHash }).eq('id', user.id);
-    if (updateErr) { errEl.textContent = 'Could not reset password. Try again.'; errEl.style.display = 'block'; return }
-    try {
-        await emailjs.send('Technoidservice', 'templates_vk5dzld', { name: user.name, email: email, title: 'Your temporary password is: ' + tempPw });
-        sucEl.style.display = 'block';
-        document.getElementById('resetEmail').value = '';
-        setTimeout(() => { sucEl.style.display = 'none'; closeModal('forgotPasswordModal') }, 4000);
-    } catch (e) {
-        errEl.textContent = 'Failed to send email. Please try again.'; errEl.style.display = 'block';
-        console.error('EmailJS error:', e);
-    }
+    const { error } = await sb.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin + window.location.pathname
+    });
+    if (error) { errEl.textContent = 'Error: ' + error.message; errEl.style.display = 'block'; return }
+
+    sucEl.textContent = 'Password reset instructions have been sent to your email!';
+    sucEl.style.display = 'block';
+    document.getElementById('resetEmail').value = '';
+    setTimeout(() => { sucEl.style.display = 'none'; closeModal('forgotPasswordModal') }, 4000);
 }
 
 /* ── Cart ── */
