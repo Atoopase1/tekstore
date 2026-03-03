@@ -1815,6 +1815,233 @@ footer {
     }
 }
 
+/* ── Full Spec Modal ── */
+.modal-spec {
+    max-width: 720px;
+    padding: 2rem;
+    position: relative;
+}
+
+.modal-spec .modal-close {
+    position: absolute;
+    top: 1.3rem;
+    right: 1.4rem;
+    width: 28px;
+    height: 28px;
+    font-size: .8rem;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text2);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: all .2s;
+}
+
+.modal-spec .modal-close:hover {
+    border-color: var(--red);
+    color: var(--red);
+}
+
+.spec-layout {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 2rem;
+    align-items: start;
+}
+
+.spec-img-col {
+    position: relative;
+}
+
+.spec-main-img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 12px;
+    background: var(--card2);
+    display: block;
+}
+
+.spec-no-img {
+    width: 100%;
+    aspect-ratio: 1;
+    background: var(--card2);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    color: var(--text3);
+    gap: .5rem;
+}
+
+.spec-no-img span {
+    font-size: .8rem;
+}
+
+.spec-stock-badge {
+    display: inline-block;
+    margin-top: .8rem;
+    padding: .3rem .8rem;
+    border-radius: 20px;
+    font-size: .78rem;
+    font-weight: 600;
+}
+
+.spec-instock {
+    background: rgba(0, 200, 100, 0.12);
+    color: #4caf50;
+    border: 1px solid rgba(0, 200, 100, 0.35);
+}
+
+.spec-outstock {
+    background: rgba(255, 100, 100, 0.1);
+    color: #ff6060;
+    border: 1px solid rgba(255, 100, 100, 0.35);
+}
+
+.spec-info-col {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.spec-category {
+    font-size: .72rem;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--accent);
+}
+
+.spec-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.45rem;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    margin: 0;
+}
+
+.spec-price {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.6rem;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+}
+
+.spec-section {
+    display: flex;
+    flex-direction: column;
+    gap: .4rem;
+}
+
+.spec-label {
+    font-size: .7rem;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--text3);
+}
+
+.spec-desc-block {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: .9rem 1rem;
+    font-size: .88rem;
+    color: var(--text2);
+    line-height: 1.7;
+    max-height: 160px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+}
+
+.spec-seller-info {
+    display: flex;
+    flex-direction: column;
+    gap: .2rem;
+}
+
+.spec-seller-name {
+    font-size: .9rem;
+    font-weight: 600;
+}
+
+.spec-seller-phone {
+    font-size: .82rem;
+    color: var(--text2);
+}
+
+.spec-actions {
+    display: flex;
+    gap: .7rem;
+    flex-wrap: wrap;
+    margin-top: .5rem;
+}
+
+.spec-pay-btn {
+    flex: 1;
+    min-width: 120px;
+    padding: .75rem 1rem !important;
+    font-size: .82rem !important;
+    text-align: center;
+}
+
+.spec-wa-btn {
+    flex: 1;
+    min-width: 120px;
+    padding: .75rem 1rem !important;
+    text-align: center;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (max-width: 600px) {
+    .spec-layout {
+        grid-template-columns: 1fr;
+        gap: 1.2rem;
+    }
+
+    .spec-main-img,
+    .spec-no-img {
+        aspect-ratio: 16/9;
+    }
+
+    .modal-spec {
+        padding: 1.2rem;
+    }
+}
+
+/* View Specs Button */
+.btn-specs {
+    background: var(--bg3);
+    color: var(--text2);
+    border: 1px solid var(--border);
+    padding: .42rem .85rem;
+    border-radius: 6px;
+    font-size: .75rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all .2s;
+    white-space: nowrap;
+}
+
+.btn-specs:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--glow);
+}
+
 /* Toast Notifications */
 .toast-container {
     position: fixed;

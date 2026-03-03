@@ -119,7 +119,7 @@ function updateAdminUI() {
     const btn = document.getElementById('adminNavBtn');
     if (isAdmin) {
         btn.classList.add('admin-active');
-        btn.innerHTML = ' Admin <span style="opacity:0.6;font-size:0.65rem;">▼</span>';
+        btn.innerHTML = '🛡️ Admin <span style="opacity:0.6;font-size:0.65rem;">▼</span>';
         btn.title = 'Click for Admin Options';
     } else {
         btn.classList.remove('admin-active');
@@ -399,13 +399,16 @@ function renderMyListings() {
     container.innerHTML = myProducts.map(p => {
         const inStock = p.in_stock !== 0;
         return '<div style="display:flex;align-items:center;gap:.8rem;padding:.7rem 0;border-bottom:1px solid var(--border);">' +
-            (p.image ? '<img src="' + p.image + '" style="width:44px;height:44px;border-radius:6px;object-fit:cover;background:var(--card2);flex-shrink:0;" />' : '<div style="width:44px;height:44px;border-radius:6px;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:.7rem;color:var(--text3);flex-shrink:0;"></div>') +
+            (p.image ? '<img src="' + p.image + '" style="width:44px;height:44px;border-radius:6px;object-fit:cover;background:var(--card2);flex-shrink:0;" />' : '<div style="width:44px;height:44px;border-radius:6px;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:.7rem;color:var(--text3);flex-shrink:0;">📦</div>') +
             '<div style="flex:1;min-width:0;">' +
             '<div style="font-size:.85rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + p.name + '</div>' +
             '<div style="font-size:.78rem;color:var(--accent);">' + p.price + '</div>' +
             '<button onclick="toggleMyListingStock(\'' + p.id + '\')" style="background:none;border:1px solid ' + (inStock ? 'rgba(0,200,100,0.45)' : 'rgba(255,100,100,0.45)') + ';color:' + (inStock ? '#4caf50' : '#ff6060') + ';border-radius:6px;padding:.18rem .45rem;cursor:pointer;font-size:.7rem;margin-top:.22rem;" title="Tap to toggle stock">● ' + (inStock ? 'In Stock' : 'Out of Stock') + '</button>' +
             '</div>' +
-            '<button onclick="deleteMyListing(\'' + p.id + '\')" style="background:none;border:1px solid rgba(255,100,100,0.4);color:#ff9090;border-radius:6px;padding:.28rem .5rem;cursor:pointer;font-size:.85rem;flex-shrink:0;" title="Delete listing">🗑</button>' +
+            '<div style="display:flex;flex-direction:column;gap:.35rem;flex-shrink:0;">' +
+            '<button onclick="openEditListing(\'' + p.id + '\')" style="background:none;border:1px solid rgba(0,194,255,0.4);color:var(--accent);border-radius:6px;padding:.28rem .5rem;cursor:pointer;font-size:.8rem;" title="Edit listing">✏️</button>' +
+            '<button onclick="deleteMyListing(\'' + p.id + '\')" style="background:none;border:1px solid rgba(255,100,100,0.4);color:#ff9090;border-radius:6px;padding:.28rem .5rem;cursor:pointer;font-size:.85rem;" title="Delete listing">🗑</button>' +
+            '</div>' +
             '</div>';
     }).join('');
 }
@@ -432,6 +435,53 @@ function deleteMyListing(productId) {
     if (!callerIsOwner) { showToast('You can only delete your own listings.', 'error'); return; }
     deleteTargetId = productId;
     openModal('deleteModal');
+}
+
+/* ── Edit Listing (User) ── */
+let editTargetId = null;
+function openEditListing(productId) {
+    const p = products.find(x => x.id === productId);
+    if (!p) return;
+    if (String(p.seller_id) !== String(currentUser.user_id)) { showToast('You can only edit your own listings.', 'error'); return; }
+    editTargetId = productId;
+    document.getElementById('editName').value = p.name || '';
+    document.getElementById('editCategory').value = p.category || 'phone';
+    document.getElementById('editPrice').value = p.price || '';
+    document.getElementById('editDesc').value = p.description || '';
+    document.getElementById('editStock').value = (p.in_stock !== 0) ? '1' : '0';
+    const preview = document.getElementById('editImagePreview');
+    if (p.image) { preview.src = p.image; preview.style.display = 'block'; } else { preview.style.display = 'none'; }
+    document.getElementById('editSuccess').style.display = 'none';
+    openModal('editListingModal');
+}
+async function saveEditListing() {
+    if (!currentUser || !editTargetId) return;
+    const product = products.find(x => x.id === editTargetId);
+    if (!product || String(product.seller_id) !== String(currentUser.user_id)) { showToast('Not authorised.', 'error'); return; }
+    const name = document.getElementById('editName').value.trim();
+    const cat = document.getElementById('editCategory').value;
+    const price = document.getElementById('editPrice').value.trim();
+    const desc = document.getElementById('editDesc').value.trim();
+    const inStock = parseInt(document.getElementById('editStock').value);
+    const imgInput = document.getElementById('editImage');
+    if (!name || !price) { showToast('Please fill in name and price.', 'error'); return; }
+    const doSave = async (imgData) => {
+        const updates = { name, category: cat, price, description: desc, in_stock: inStock };
+        if (imgData !== null) updates.image = imgData;
+        const { error } = await sb.from('products').update(updates).eq('id', editTargetId);
+        if (error) { showToast('Error saving changes: ' + error.message, 'error'); return; }
+        document.getElementById('editSuccess').style.display = 'block';
+        setTimeout(() => { document.getElementById('editSuccess').style.display = 'none'; closeModal('editListingModal'); }, 2000);
+        editTargetId = null;
+        await loadProducts();
+        renderMyListings();
+        showToast('Listing updated!', 'success');
+    };
+    if (imgInput.files && imgInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = e => doSave(e.target.result);
+        reader.readAsDataURL(imgInput.files[0]);
+    } else { doSave(null); }
 }
 
 
@@ -629,17 +679,18 @@ function renderProducts() {
         const payBtn = isAdminProduct
             ? '<button class="btn-paystack" onclick="openPaystack(\'' + p.id + '\')">MoMo / Card</button>'
             : '<button class="btn-momo" onclick="openMomo(\'' + p.id + '\')">Pay MoMo</button>';
-        const waLink = 'https://wa.me/233544833571?text=Hi%2C%20I\'m%20interested%20in%20the%20' + encodeURIComponent(p.name) + '%20listed%20at%20' + encodeURIComponent(p.price) + '%20on%20your%20shop.%20Can%20we%20negotiate%3F';
+        const waPhone = isAdminProduct ? '0544833571' : (p.seller_phone || '0544833571');
+        const waLink = 'https://wa.me/233' + waPhone.replace(/^0/, '') + '?text=Hi%2C%20I\'m%20interested%20in%20the%20' + encodeURIComponent(p.name) + '%20listed%20at%20' + encodeURIComponent(p.price) + '%20on%20your%20shop.%20Can%20we%20negotiate%3F';
         var cartOverlay = inStock
             ? '<button class="btn-cart-overlay' + (cart.some(c => c.id === p.id) ? ' in-cart' : '') + '" onclick="event.stopPropagation();addToCart(\'' + p.id + '\')" title="Add to cart">' + (cart.some(c => c.id === p.id) ? '✓' : '+') + '</button>'
             : '';
         return '<div class="product-card' + (!inStock ? ' out-of-stock' : '') + '" data-id="' + p.id + '">' +
-            '<div class="prod-img-wrap">' +
+            '<div class="prod-img-wrap" onclick="openProductSpec(\'' + p.id + '\')" style="cursor:pointer;">' +
             (p.image ? '<img src="' + p.image + '" alt="' + p.name + '" loading="lazy" />' : '<div class="no-img-placeholder"><div class="ph-box"></div><span>No Image</span></div>') +
             stockBadge + sellerBadge + deleteBtn + cartOverlay +
             '</div>' +
             '<div class="prod-body">' +
-            '<div class="prod-name">' + p.name + '</div>' +
+            '<div class="prod-name" onclick="openProductSpec(\'' + p.id + '\')" style="cursor:pointer;">' + p.name + '</div>' +
             (p.description ? '<div class="prod-desc">' + p.description + '</div>' : '') +
             '<div class="prod-price">' + p.price + '</div>' +
             '<div class="prod-actions">' +
@@ -647,6 +698,46 @@ function renderProducts() {
             payBtn +
             '</div></div></div>';
     }).join('');
+}
+
+/* ── Product Spec Modal ── */
+function openProductSpec(productId) {
+    const p = products.find(x => x.id === productId);
+    if (!p) return;
+    const inStock = p.in_stock !== 0;
+    const isAdminProd = !p.seller_id || parseInt(p.seller_id) === 1;
+    const sellerName = isAdminProd ? 'Technoid Store' : (p.seller_name || 'Seller');
+    const sellerPhone = isAdminProd ? '0544833571' : (p.seller_phone || '0544833571');
+    const waLink = 'https://wa.me/233' + sellerPhone.replace(/^0/, '') + '?text=Hi%2C%20I\'m%20interested%20in%20the%20' + encodeURIComponent(p.name) + '%20listed%20at%20' + encodeURIComponent(p.price) + '%20on%20your%20shop.%20Can%20we%20negotiate%3F';
+    const catLabel = { phone: '📱 Phone', laptop: '💻 Laptop', tablet: '📟 Tablet', accessory: '🔌 Accessory', audio: '🎧 Audio', other: '📦 Gadget' };
+
+    document.getElementById('specModalContent').innerHTML =
+        '<div class="spec-layout">' +
+        '<div class="spec-img-col">' +
+        (p.image
+            ? '<img src="' + p.image + '" alt="' + p.name + '" class="spec-main-img" />'
+            : '<div class="spec-no-img">📦<br><span>No Image</span></div>') +
+        '<div class="spec-stock-badge ' + (inStock ? 'spec-instock' : 'spec-outstock') + '">● ' + (inStock ? 'In Stock' : 'Out of Stock') + '</div>' +
+        '</div>' +
+        '<div class="spec-info-col">' +
+        '<div class="spec-category">' + (catLabel[p.category] || p.category) + '</div>' +
+        '<h2 class="spec-title">' + p.name + '</h2>' +
+        '<div class="spec-price">' + p.price + '</div>' +
+        (p.description ? '<div class="spec-section"><div class="spec-label">Description / Specs</div><div class="spec-desc-block">' + p.description.replace(/\n/g, '<br>') + '</div></div>' : '') +
+        '<div class="spec-section"><div class="spec-label">Seller</div><div class="spec-seller-info">' +
+        '<span class="spec-seller-name">' + sellerName + '</span>' +
+        '<span class="spec-seller-phone">📞 ' + sellerPhone + '</span>' +
+        '</div></div>' +
+        '<div class="spec-actions">' +
+        (inStock
+            ? (isAdminProd
+                ? '<button class="btn-submit spec-pay-btn" onclick="closeModal(\'productSpecModal\');openPaystack(\'' + p.id + '\')">💳 Pay MoMo / Card</button>'
+                : '<button class="btn-submit spec-pay-btn" onclick="closeModal(\'productSpecModal\');openMomo(\'' + p.id + '\')">💳 Pay via MoMo</button>')
+            : '<button class="btn-submit spec-pay-btn" disabled style="opacity:.5;cursor:not-allowed;">Out of Stock</button>') +
+        '<a href="' + waLink + '" target="_blank" class="btn-wa spec-wa-btn">💬 WhatsApp</a>' +
+        '</div>' +
+        '</div></div>';
+    openModal('productSpecModal');
 }
 
 /* ── Scroll Reveal ── */
