@@ -8,15 +8,38 @@ const ADMIN_EMAIL = 'atoopase@gmail.com';
 let isAdmin = false, deleteTargetId = null, currentFilter = 'all', products = [], currentUser = null, paystackTargetProduct = null;
 let cart = JSON.parse(localStorage.getItem('technoid_cart') || '[]');
 
+/* ── Icon System ── */
+const ICONS = {
+    info: '<svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>',
+    check: '<svg class="icon icon-md" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+    error: '<svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
+    package: '<svg class="icon" viewBox="0 0 24 24"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>',
+    trash: '<svg class="icon icon-md" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>',
+    user: '<svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+    edit: '<svg class="icon icon-md" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>',
+    cartEmpty: '<svg class="icon icon-xl" viewBox="0 0 24 24" stroke-width="1.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>',
+    remove: '<svg class="icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
+    whatsapp: '<svg class="icon" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>',
+    momoObj: '<svg class="icon" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>',
+    phone: '<svg class="icon" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
+    laptop: '<svg class="icon" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="2" y1="20" x2="22" y2="20"/></svg>',
+    tablet: '<svg class="icon" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>',
+    accessory: '<svg class="icon" viewBox="0 0 24 24"><path d="M11 20.53A4 4 0 1 0 19.5 12h-9m0 0a4 4 0 1 0 8.53 8.53"/><path d="M5 4h5"/><path d="M7 2v4"/></svg>',
+    audio: '<svg class="icon" viewBox="0 0 24 24"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1v-6h3v4z"/><path d="M3 19a2 2 0 0 0 2 2h1v-6H3v4z"/></svg>',
+    gadget: '<svg class="icon" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>',
+    receipt: '<svg class="icon icon-md" viewBox="0 0 24 24" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>',
+    messageCircle: '<svg class="icon icon-md" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>'
+};
+
 /* ── UI Helpers ── */
 function showToast(message, type = 'info') {
     const container = document.getElementById('toastContainer');
     if (!container) return;
     const toast = document.createElement('div');
     toast.className = `toast toast-${type}`;
-    let icon = 'ℹ️';
-    if (type === 'success') icon = '✅';
-    if (type === 'error') icon = '❌';
+    let icon = ICONS.info;
+    if (type === 'success') icon = ICONS.check;
+    if (type === 'error') icon = ICONS.error;
     toast.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
     container.appendChild(toast);
     setTimeout(() => {
@@ -27,35 +50,46 @@ function showToast(message, type = 'info') {
 
 function toggleMobileNav() {
     const hamburger = document.getElementById('hamburgerMenu');
-    const navLinks = document.querySelector('.nav-links');
-
+    const overlay = document.getElementById('mobileNavOverlay');
     hamburger.classList.toggle('open');
-    navLinks.classList.toggle('open');
+    if (overlay) overlay.classList.toggle('open');
 }
 
 function closeMobileNav() {
     const hamburger = document.getElementById('hamburgerMenu');
-    const navLinks = document.querySelector('.nav-links');
-
+    const overlay = document.getElementById('mobileNavOverlay');
     hamburger.classList.remove('open');
-    navLinks.classList.remove('open');
+    if (overlay) overlay.classList.remove('open');
 }
 
 /* ── Theme ── */
-function toggleTheme() {
-    const html = document.documentElement;
-    const isDark = html.getAttribute('data-theme') === 'dark';
-    html.setAttribute('data-theme', isDark ? 'light' : 'dark');
-    document.querySelector('.theme-toggle').textContent = isDark ? '🌙' : '☀️';
-    localStorage.setItem('technoid_theme', isDark ? 'light' : 'dark');
+const SUN_SVG = '<svg class="theme-svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 7a5 5 0 100 10 5 5 0 000-10zm0-3a1 1 0 011-1V1a1 1 0 01-2 0v2a1 1 0 011 1zm0 16a1 1 0 01-1 1v2a1 1 0 012 0v-2a1 1 0 01-1-1zm9-9a1 1 0 011 1h2a1 1 0 010 2h-2a1 1 0 01-1-1zm-18 0a1 1 0 01-1-1H1a1 1 0 010-2h2a1 1 0 011 1zm14.95-5.64a1 1 0 011.41 0l1.42 1.42a1 1 0 01-1.42 1.41l-1.41-1.41a1 1 0 010-1.42zM4.22 17.66a1 1 0 010 1.42l-1.42 1.41a1 1 0 01-1.41-1.41l1.41-1.42a1 1 0 011.42 0zm13.56 1.42a1 1 0 010-1.42l1.41-1.42a1 1 0 011.42 1.42l-1.42 1.41a1 1 0 01-1.41 0zM4.22 6.34a1 1 0 01-1.42 0L1.39 4.93a1 1 0 011.41-1.42L4.22 4.93a1 1 0 010 1.41z"/></svg>';
+const MOON_SVG = '<svg class="theme-svg" viewBox="0 0 24 24" fill="currentColor"><path d="M21.75 15.5a.75.75 0 01-.07 1A9.73 9.73 0 0112 20a9.99 9.99 0 01-9.44-13.33.75.75 0 011.1-.47A7.5 7.5 0 0016.5 13a7.49 7.49 0 004.22-1.3.75.75 0 011.03.4z"/></svg>';
+function setThemeIcon(theme) {
+    const desktopBtn = document.getElementById('desktopThemeBtn');
+    const mobileBtn = document.getElementById('mobileThemeBtn');
+    const svg = theme === 'dark' ? SUN_SVG : MOON_SVG;
+    const label = theme === 'dark' ? 'Light Mode' : 'Dark Mode';
+    if (desktopBtn) desktopBtn.innerHTML = svg;
+    if (mobileBtn) {
+        const labelSpan = mobileBtn.querySelector('.mobile-theme-label');
+        mobileBtn.innerHTML = svg + ' <span class="mobile-theme-label">' + label + '</span>';
+    }
 }
+
+function toggleTheme() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const next = isDark ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('technoid_theme', next);
+    setThemeIcon(next);
+}
+
+// Apply saved theme on load
 (function () {
     const saved = localStorage.getItem('technoid_theme') || 'dark';
     document.documentElement.setAttribute('data-theme', saved);
-    window.addEventListener('DOMContentLoaded', () => {
-        document.querySelector('.theme-toggle').textContent = saved === 'dark' ? '☀️' : '🌙';
-    });
-})();
+}());
 
 /* ── Custom Confirm ── */
 let currentConfirmCallback = null;
@@ -116,16 +150,17 @@ function exitAdmin() {
     renderProducts();
 }
 function updateAdminUI() {
-    const btn = document.getElementById('adminNavBtn');
-    if (isAdmin) {
-        btn.classList.add('admin-active');
-        btn.innerHTML = '🛡️ Admin <span style="opacity:0.6;font-size:0.65rem;">▼</span>';
-        btn.title = 'Click for Admin Options';
-    } else {
-        btn.classList.remove('admin-active');
-        btn.innerHTML = 'Admin';
-        btn.title = '';
-    }
+    document.querySelectorAll('.adminNavBtn').forEach(btn => {
+        if (isAdmin) {
+            btn.classList.add('admin-active');
+            btn.innerHTML = 'Danger Zone <span style="opacity:0.6;font-size:0.65rem;">▼</span>';
+            btn.title = 'Click for Admin Options';
+        } else {
+            btn.classList.remove('admin-active');
+            btn.innerHTML = 'Danger Zone';
+            btn.title = '';
+        }
+    });
 }
 
 /* ── Image Preview (shared) ── */
@@ -274,30 +309,31 @@ async function logoutUser() {
     isAdmin = false;
     sessionStorage.removeItem('technoid_admin');
     closeModal('userPanel');
-    document.getElementById('adminNavBtn').style.display = 'none';
     updateAuthUI();
     updateAdminUI();
     renderProducts();
 }
 function updateAuthUI() {
-    const loginBtn = document.getElementById('loginNavBtn');
-    const userBtn = document.getElementById('userNavBtn');
-    const adminBtn = document.getElementById('adminNavBtn');
+    const loginBtns = document.querySelectorAll('.loginNavBtn');
+    const userBtns = document.querySelectorAll('.userNavBtn');
+    const adminBtns = document.querySelectorAll('.adminNavBtn');
     if (currentUser) {
-        loginBtn.style.display = 'none';
-        userBtn.style.display = '';
-        userBtn.innerHTML = (currentUser.avatar ? '<img src="' + currentUser.avatar + '" class="nav-avatar" />' : '\uD83D\uDC64 ') + currentUser.username;
+        loginBtns.forEach(b => b.style.display = 'none');
+        userBtns.forEach(b => {
+            b.style.display = '';
+            b.innerHTML = (currentUser.avatar ? '<img src="' + currentUser.avatar + '" class="nav-avatar" />' : `${ICONS.user} `) + currentUser.username;
+        });
         document.getElementById('profileDisplayName').textContent = currentUser.name;
         document.getElementById('profileHandle').textContent = '@' + currentUser.username;
         const avatarImg = document.getElementById('avatarDisplay');
         const avatarPh = document.getElementById('avatarPlaceholder');
         if (currentUser.avatar) { avatarImg.src = currentUser.avatar; avatarImg.style.display = 'block'; avatarPh.style.display = 'none'; }
         else { avatarImg.style.display = 'none'; avatarPh.style.display = ''; }
-        adminBtn.style.display = (currentUser.role === 'admin') ? 'inline-block' : 'none';
+        adminBtns.forEach(b => b.style.display = (currentUser.role === 'admin') ? 'inline-block' : 'none');
     } else {
-        loginBtn.style.display = '';
-        userBtn.style.display = 'none';
-        adminBtn.style.display = 'none';
+        loginBtns.forEach(b => b.style.display = '');
+        userBtns.forEach(b => b.style.display = 'none');
+        adminBtns.forEach(b => b.style.display = 'none');
     }
 }
 async function uploadAvatar(input) {
@@ -399,15 +435,15 @@ function renderMyListings() {
     container.innerHTML = myProducts.map(p => {
         const inStock = p.in_stock !== 0;
         return '<div style="display:flex;align-items:center;gap:.8rem;padding:.7rem 0;border-bottom:1px solid var(--border);">' +
-            (p.image ? '<img src="' + p.image + '" style="width:44px;height:44px;border-radius:6px;object-fit:cover;background:var(--card2);flex-shrink:0;" />' : '<div style="width:44px;height:44px;border-radius:6px;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:.7rem;color:var(--text3);flex-shrink:0;">📦</div>') +
+            (p.image ? '<img src="' + p.image + '" style="width:44px;height:44px;border-radius:6px;object-fit:cover;background:var(--card2);flex-shrink:0;" />' : '<div style="width:44px;height:44px;border-radius:6px;background:var(--card2);display:flex;align-items:center;justify-content:center;color:var(--text3);flex-shrink:0;">' + ICONS.package + '</div>') +
             '<div style="flex:1;min-width:0;">' +
             '<div style="font-size:.85rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + p.name + '</div>' +
             '<div style="font-size:.78rem;color:var(--accent);">' + p.price + '</div>' +
             '<button onclick="toggleMyListingStock(\'' + p.id + '\')" style="background:none;border:1px solid ' + (inStock ? 'rgba(0,200,100,0.45)' : 'rgba(255,100,100,0.45)') + ';color:' + (inStock ? '#4caf50' : '#ff6060') + ';border-radius:6px;padding:.18rem .45rem;cursor:pointer;font-size:.7rem;margin-top:.22rem;" title="Tap to toggle stock">● ' + (inStock ? 'In Stock' : 'Out of Stock') + '</button>' +
             '</div>' +
             '<div style="display:flex;flex-direction:column;gap:.35rem;flex-shrink:0;">' +
-            '<button onclick="openEditListing(\'' + p.id + '\')" style="background:none;border:1px solid rgba(0,194,255,0.4);color:var(--accent);border-radius:6px;padding:.28rem .5rem;cursor:pointer;font-size:.8rem;" title="Edit listing">✏️</button>' +
-            '<button onclick="deleteMyListing(\'' + p.id + '\')" style="background:none;border:1px solid rgba(255,100,100,0.4);color:#ff9090;border-radius:6px;padding:.28rem .5rem;cursor:pointer;font-size:.85rem;" title="Delete listing">🗑</button>' +
+            '<button onclick="openEditListing(\'' + p.id + '\')" style="background:none;border:1px solid rgba(0,194,255,0.4);color:var(--accent);border-radius:6px;padding:.28rem .5rem;cursor:pointer;" title="Edit listing">' + ICONS.edit + '</button>' +
+            '<button onclick="deleteMyListing(\'' + p.id + '\')" style="background:none;border:1px solid rgba(255,100,100,0.4);color:#ff9090;border-radius:6px;padding:.28rem .5rem;cursor:pointer;" title="Delete listing">' + ICONS.trash + '</button>' +
             '</div>' +
             '</div>';
     }).join('');
@@ -598,14 +634,14 @@ function showReceipt(response, product, phone) {
     const dateStr = new Date().toLocaleString('en-GH', { dateStyle: 'full', timeStyle: 'short' });
     document.getElementById('receiptContent').innerHTML =
         '<div style="text-align:center;margin-bottom:1rem">' +
-        '<h2>🧾 Technoid Store — Payment Receipt</h2>' +
+        '<h2>' + ICONS.receipt + ' Technoid Store — Payment Receipt</h2>' +
         '<small style="color:#666">technoidfix.netlify.app | 0544833571</small></div>' +
         '<div class="r-row"><span>Product</span><span>' + product.name + '</span></div>' +
         '<div class="r-row"><span>Amount Paid</span><span>' + product.price + '</span></div>' +
         '<div class="r-row"><span>Buyer Phone</span><span>' + phone + '</span></div>' +
         '<div class="r-row"><span>Date &amp; Time</span><span>' + dateStr + '</span></div>' +
         '<div class="r-row"><span>Paystack Ref</span><span style="font-family:monospace;font-size:0.78rem">' + response.reference + '</span></div>' +
-        '<div class="r-row" style="color:green;font-weight:700"><span>Status</span><span>✅ Payment Verified</span></div>';
+        '<div class="r-row" style="color:green;font-weight:700"><span>Status</span><span style="display:flex;align-items:center;gap:4px;">' + ICONS.check + ' Payment Verified</span></div>';
     openModal('receiptModal');
 }
 function printReceipt() {
@@ -661,7 +697,7 @@ function catLabel(cat) {
 function renderProducts() {
     const grid = document.getElementById('productsGrid');
     const filtered = currentFilter === 'all' ? products : products.filter(p => p.category === currentFilter);
-    document.getElementById('productCount').textContent = filtered.length + ' product' + (filtered.length !== 1 ? 's' : '');
+    document.getElementById('productCount').textContent = filtered.length + ' Item' + (filtered.length !== 1 ? 's' : '');
     if (filtered.length === 0) {
         grid.innerHTML = '<div class="no-products"><div class="no-img-placeholder" style="width:80px;height:70px;margin:0 auto 1rem;border:2px dashed var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;"></div>' +
             '<h3>' + (currentFilter === 'all' ? 'No Products Yet' : 'No ' + catLabel(currentFilter) + 's Listed') + '</h3>' +
@@ -674,11 +710,11 @@ function renderProducts() {
         const stockBadge = isAdmin
             ? '<button class="prod-badge-stock ' + (inStock ? 'badge-instock' : 'badge-outstock') + '" onclick="toggleStock(\'' + p.id + '\')" title="Tap to toggle stock">● ' + (inStock ? 'In Stock' : 'Out of Stock') + '</button>'
             : '<span class="prod-badge-stock ' + (inStock ? 'badge-instock' : 'badge-outstock') + '">● ' + (inStock ? 'In Stock' : 'Out of Stock') + '</span>';
-        const deleteBtn = isAdmin ? '<button class="delete-btn" onclick="triggerDelete(\'' + p.id + '\')" title="Delete product">🗑</button>' : '';
+        const deleteBtn = isAdmin ? '<button class="delete-btn" onclick="triggerDelete(\'' + p.id + '\')" title="Delete product" aria-label="Delete product">' + ICONS.trash + '</button>' : '';
         const sellerBadge = (!isAdminProduct && p.seller_name) ? '<span class="prod-badge-seller">' + p.seller_name + '</span>' : '';
         const payBtn = isAdminProduct
-            ? '<button class="btn-paystack" onclick="openPaystack(\'' + p.id + '\')">MoMo / Card</button>'
-            : '<button class="btn-momo" onclick="openMomo(\'' + p.id + '\')">Pay MoMo</button>';
+            ? '<button class="btn-paystack" onclick="openPaystack(\'' + p.id + '\')">' + ICONS.momoObj + ' MoMo / Card</button>'
+            : '<button class="btn-momo" onclick="openMomo(\'' + p.id + '\')">' + ICONS.momoObj + ' Pay MoMo</button>';
         const waPhone = isAdminProduct ? '0544833571' : (p.seller_phone || '0544833571');
         const waLink = 'https://wa.me/233' + waPhone.replace(/^0/, '') + '?text=Hi%2C%20I\'m%20interested%20in%20the%20' + encodeURIComponent(p.name) + '%20listed%20at%20' + encodeURIComponent(p.price) + '%20on%20your%20shop.%20Can%20we%20negotiate%3F';
         var cartOverlay = inStock
@@ -694,7 +730,7 @@ function renderProducts() {
             (p.description ? '<div class="prod-desc">' + p.description + '</div>' : '') +
             '<div class="prod-price">' + p.price + '</div>' +
             '<div class="prod-actions">' +
-            '<a href="' + waLink + '" target="_blank" class="btn-wa">WhatsApp</a>' +
+            '<a href="' + waLink + '" target="_blank" class="btn-wa">' + ICONS.whatsapp + ' WhatsApp</a>' +
             payBtn +
             '</div></div></div>';
     }).join('');
@@ -709,14 +745,14 @@ function openProductSpec(productId) {
     const sellerName = isAdminProd ? 'Technoid Store' : (p.seller_name || 'Seller');
     const sellerPhone = isAdminProd ? '0544833571' : (p.seller_phone || '0544833571');
     const waLink = 'https://wa.me/233' + sellerPhone.replace(/^0/, '') + '?text=Hi%2C%20I\'m%20interested%20in%20the%20' + encodeURIComponent(p.name) + '%20listed%20at%20' + encodeURIComponent(p.price) + '%20on%20your%20shop.%20Can%20we%20negotiate%3F';
-    const catLabel = { phone: '📱 Phone', laptop: '💻 Laptop', tablet: '📟 Tablet', accessory: '🔌 Accessory', audio: '🎧 Audio', other: '📦 Gadget' };
+    const catLabel = { phone: ICONS.phone + ' Phone', laptop: ICONS.laptop + ' Laptop', tablet: ICONS.tablet + ' Tablet', accessory: ICONS.accessory + ' Accessory', audio: ICONS.audio + ' Audio', other: ICONS.gadget + ' Gadget' };
 
     document.getElementById('specModalContent').innerHTML =
         '<div class="spec-layout">' +
         '<div class="spec-img-col">' +
         (p.image
             ? '<img src="' + p.image + '" alt="' + p.name + '" class="spec-main-img" />'
-            : '<div class="spec-no-img">📦<br><span>No Image</span></div>') +
+            : '<div class="spec-no-img">' + ICONS.package + '<br><span>No Image</span></div>') +
         '<div class="spec-stock-badge ' + (inStock ? 'spec-instock' : 'spec-outstock') + '">● ' + (inStock ? 'In Stock' : 'Out of Stock') + '</div>' +
         '</div>' +
         '<div class="spec-info-col">' +
@@ -731,10 +767,10 @@ function openProductSpec(productId) {
         '<div class="spec-actions">' +
         (inStock
             ? (isAdminProd
-                ? '<button class="btn-submit spec-pay-btn" onclick="closeModal(\'productSpecModal\');openPaystack(\'' + p.id + '\')">💳 Pay MoMo / Card</button>'
-                : '<button class="btn-submit spec-pay-btn" onclick="closeModal(\'productSpecModal\');openMomo(\'' + p.id + '\')">💳 Pay via MoMo</button>')
+                ? '<button class="btn-submit spec-pay-btn" onclick="closeModal(\'productSpecModal\');openPaystack(\'' + p.id + '\')"><span style="display:flex;align-items:center;justify-content:center;gap:6px">' + ICONS.momoObj + ' Pay MoMo / Card</span></button>'
+                : '<button class="btn-submit spec-pay-btn" onclick="closeModal(\'productSpecModal\');openMomo(\'' + p.id + '\')"><span style="display:flex;align-items:center;justify-content:center;gap:6px">' + ICONS.momoObj + ' Pay via MoMo</span></button>')
             : '<button class="btn-submit spec-pay-btn" disabled style="opacity:.5;cursor:not-allowed;">Out of Stock</button>') +
-        '<a href="' + waLink + '" target="_blank" class="btn-wa spec-wa-btn">💬 WhatsApp</a>' +
+        '<a href="' + waLink + '" target="_blank" class="btn-wa spec-wa-btn">' + ICONS.messageCircle + ' WhatsApp</a>' +
         '</div>' +
         '</div></div>';
     openModal('productSpecModal');
@@ -803,7 +839,7 @@ function renderCart() {
     const totalRow = document.getElementById('cartTotalRow');
     const actions = document.getElementById('cartActions');
     if (cart.length === 0) {
-        list.innerHTML = '<div class="cart-empty"><div class="cart-empty-icon">🛒</div><p>Your cart is empty</p></div>';
+        list.innerHTML = '<div class="cart-empty"><div class="cart-empty-icon" style="color:var(--text3);margin-bottom:1rem;">' + ICONS.cartEmpty + '</div><p>Your cart is empty</p></div>';
         totalRow.style.display = 'none'; actions.style.display = 'none';
         return;
     }
@@ -816,46 +852,167 @@ function renderCart() {
             '<div class="cart-item-info"><div class="cart-item-name">' + c.name + '</div>' +
             '<div class="cart-item-price">' + c.price + '</div></div>' +
             '<div class="cart-qty">' +
-            '<button onclick="updateCartQty(\'' + c.id + '\', -1)">−</button>' +
+            '<button onclick="updateCartQty(\'' + c.id + '\', -1)" aria-label="Decrease quantity">−</button>' +
             '<span>' + c.qty + '</span>' +
-            '<button onclick="updateCartQty(\'' + c.id + '\', 1)">+</button></div>' +
-            '<button class="cart-remove" onclick="removeFromCart(\'' + c.id + '\')" title="Remove">✕</button></div>';
+            '<button onclick="updateCartQty(\'' + c.id + '\', 1)" aria-label="Increase quantity">+</button></div>' +
+            '<button class="cart-remove" onclick="removeFromCart(\'' + c.id + '\')" title="Remove" aria-label="Remove item">' + ICONS.remove + '</button></div>';
     }).join('') + '</div>';
     document.getElementById('cartTotalAmount').textContent = 'GHS ' + total.toLocaleString('en', { minimumFractionDigits: 2 });
     totalRow.style.display = ''; actions.style.display = '';
 }
 function checkoutCart() {
     if (cart.length === 0) return;
-    let msg = 'Hi, I want to order the following from Technoid Store:\n\n';
-    let total = 0;
+
+    // Group items by seller
+    const sellerGroups = {};
     cart.forEach(c => {
-        const itemTotal = parsePrice(c.price) * c.qty;
-        total += itemTotal;
-        msg += '• ' + c.name + ' × ' + c.qty + ' — ' + c.price + '\n';
+        const product = products.find(p => p.id === c.id);
+        const isAdminProd = !product || !product.seller_id || parseInt(product.seller_id) === 1;
+        const phone = isAdminProd ? '0544833571' : (product && product.seller_phone ? product.seller_phone : '0544833571');
+        const sellerName = isAdminProd ? 'Technoid Store' : (product && product.seller_name ? product.seller_name : 'Seller');
+        if (!sellerGroups[phone]) sellerGroups[phone] = { phone, sellerName, items: [] };
+        sellerGroups[phone].items.push(c);
     });
-    msg += '\nTotal: GHS ' + total.toLocaleString('en', { minimumFractionDigits: 2 });
-    msg += '\n\nPlease confirm availability and payment details.';
-    window.open('https://wa.me/233544833571?text=' + encodeURIComponent(msg), '_blank');
+
+    Object.values(sellerGroups).forEach(({ phone, sellerName, items }) => {
+        let total = 0;
+        const lines = items.map(c => {
+            const itemTotal = parsePrice(c.price) * c.qty;
+            total += itemTotal;
+            return '• ' + c.name + ' × ' + c.qty + '  —  ' + c.price;
+        });
+
+        const divider = '─────────────────────';
+        const msg =
+            '🛒 *ORDER FROM TEKSTORE*\n' +
+            divider + '\n' +
+            lines.join('\n') + '\n' +
+            divider + '\n' +
+            '*Total: GHS ' + total.toLocaleString('en', { minimumFractionDigits: 2 }) + '*\n\n' +
+            'Please confirm availability and share payment details. Thank you! 🙏';
+
+        const waNum = '233' + phone.replace(/^0/, '');
+        window.open('https://wa.me/' + waNum + '?text=' + encodeURIComponent(msg), '_blank');
+    });
 }
+
 function clearCart() {
     customConfirm('Clear Cart', 'Clear all items from your cart?', () => {
         cart = []; saveCart(); updateCartBadge(); renderCart(); renderProducts();
         showToast('Cart cleared.');
     });
 }
+
 function checkoutCartPaystack() {
     if (cart.length === 0) return;
-    var total = cart.reduce(function (s, c) { return s + parsePrice(c.price) * c.qty; }, 0);
-    if (!total) { showToast('Could not calculate cart total.', 'error'); return; }
-    var summary = cart.map(function (c) { return c.name + ' ×' + c.qty; }).join(', ');
-    paystackTargetProduct = { id: 'cart', name: 'Cart: ' + summary, price: 'GHS ' + total.toFixed(2) };
-    document.getElementById('paystackProductLabel').textContent = 'Cart Total — GHS ' + total.toLocaleString('en', { minimumFractionDigits: 2 });
-    document.getElementById('paystackEmail').value = '';
-    document.getElementById('paystackPhone').value = '';
-    document.getElementById('paystackError').style.display = 'none';
-    closeModal('cartModal');
-    openModal('paystackModal');
+
+    // Check if cart has any non-admin (user-seller) products
+    const nonAdminItems = cart.filter(c => {
+        const product = products.find(p => p.id === c.id);
+        return product && product.seller_id && parseInt(product.seller_id) !== 1;
+    });
+    const adminItems = cart.filter(c => {
+        const product = products.find(p => p.id === c.id);
+        return !product || !product.seller_id || parseInt(product.seller_id) === 1;
+    });
+
+    // If ALL items are from user sellers, show MoMo modal for each seller
+    if (nonAdminItems.length > 0 && adminItems.length === 0) {
+        // Group by seller
+        const sellerGroups = {};
+        nonAdminItems.forEach(c => {
+            const product = products.find(p => p.id === c.id);
+            const phone = product.seller_phone || '0544833571';
+            const sellerName = product.seller_name || 'Seller';
+            if (!sellerGroups[phone]) sellerGroups[phone] = { phone, sellerName, items: [] };
+            sellerGroups[phone].items.push(c);
+        });
+        const first = Object.values(sellerGroups)[0];
+        let total = first.items.reduce((s, c) => s + parsePrice(c.price) * c.qty, 0);
+        let itemList = first.items.map(c => c.name + ' ×' + c.qty).join(', ');
+        const waNum = '233' + first.phone.replace(/^0/, '');
+        document.getElementById('momoProductName').textContent = 'Cart: ' + itemList;
+        document.getElementById('momoDetails').innerHTML =
+            'Send payment of <strong>GHS ' + total.toLocaleString('en', { minimumFractionDigits: 2 }) + '</strong> to:<br>' +
+            '<strong>' + first.phone + '</strong> (' + first.sellerName + ')<br><br>' +
+            'After paying, send your MoMo transaction ID and name on WhatsApp to confirm your order.';
+        document.getElementById('momoWhatsappLink').href =
+            'https://wa.me/' + waNum + '?text=' + encodeURIComponent('Hi ' + first.sellerName + ', I want to pay via MoMo for: ' + itemList + '. Total: GHS ' + total.toFixed(2));
+        closeModal('cartModal');
+        openModal('momoModal');
+        return;
+    }
+
+    // If ALL items are admin products, open Paystack
+    if (adminItems.length > 0 && nonAdminItems.length === 0) {
+        var total = cart.reduce(function (s, c) { return s + parsePrice(c.price) * c.qty; }, 0);
+        if (!total) { showToast('Could not calculate cart total.', 'error'); return; }
+        var summary = cart.map(function (c) { return c.name + ' ×' + c.qty; }).join(', ');
+        paystackTargetProduct = { id: 'cart', name: 'Cart: ' + summary, price: 'GHS ' + total.toFixed(2) };
+        document.getElementById('paystackProductLabel').textContent = 'Cart Total — GHS ' + total.toLocaleString('en', { minimumFractionDigits: 2 });
+        document.getElementById('paystackEmail').value = '';
+        document.getElementById('paystackPhone').value = '';
+        document.getElementById('paystackError').style.display = 'none';
+        closeModal('cartModal');
+        openModal('paystackModal');
+        return;
+    }
+
+    // Mixed cart — notify user to handle separately
+    showToast('Your cart has items from different sellers. Please buy them separately for correct payment routing.', 'error');
 }
+
+/* ── Search ── */
+function setupSearch(inputId, suggestionsId) {
+    const input = document.getElementById(inputId);
+    const box = document.getElementById(suggestionsId);
+    if (!input || !box) return;
+    input.addEventListener('input', () => {
+        const q = input.value.toLowerCase().trim();
+        if (!q) { box.classList.remove('active'); return; }
+        const matches = products.filter(p =>
+            p.name.toLowerCase().includes(q) || (p.category || '').toLowerCase().includes(q)
+        );
+        if (matches.length === 0) {
+            box.innerHTML = '<div style="padding:1rem;text-align:center;color:var(--text3);font-size:0.83rem;">No products found</div>';
+        } else {
+            box.innerHTML = matches.slice(0, 6).map(p => `
+                <div class="suggestion-item" onclick="openProductSpec('${p.id}'); input_${inputId}_clear();">
+                    ${p.image ? `<img src="${p.image}" class="suggest-img" onerror="this.style.display='none'" />` : `<div class="suggest-img" style="background:var(--bg3);display:flex;align-items:center;justify-content:center;color:var(--text3);">${ICONS.package}</div>`}
+                    <div class="suggest-info">
+                        <div class="suggest-name">${p.name}</div>
+                        <div class="suggest-price">${p.price}</div>
+                    </div>
+                </div>`).join('');
+        }
+        box.classList.add('active');
+    });
+    window['input_' + inputId + '_clear'] = () => {
+        input.value = '';
+        box.classList.remove('active');
+        closeMobileNav();
+    };
+    document.addEventListener('click', e => {
+        if (!input.contains(e.target) && !box.contains(e.target)) box.classList.remove('active');
+    });
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+    setupSearch('searchInput', 'searchSuggestions');
+    setupSearch('mobileSearchInput', 'mobileSearchSuggestions');
+
+    // Navbar scroll effect
+    const nav = document.querySelector('nav');
+    if (nav) {
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 80) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+    }
+});
 
 /* ── Init ── */
 restoreSession();
@@ -869,3 +1026,6 @@ openModal = function (id) {
     if (id === 'userPanel') setTimeout(renderMyListings, 50);
     _origOpenModal(id);
 };
+
+// Init theme icon after DOM ready
+setThemeIcon(localStorage.getItem('technoid_theme') || 'dark');
