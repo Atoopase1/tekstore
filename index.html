@@ -4,7 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Technoid Shop — Phones, Laptops &amp; Gadgets</title>
+    <meta name="theme-color" content="#00C2FF">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="logo-192.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="logo-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="logo.png">
+    <title>Electronics Shop</title>
     <link
         href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&family=Exo+2:wght@400;700;900&display=swap"
         rel="stylesheet">
@@ -306,8 +311,20 @@
                 <p>Login to post or manage your products.</p>
                 <div class="form-group"><label>Email or Username</label><input type="text" id="loginUsername"
                         placeholder="Your email or username" /></div>
-                <div class="form-group"><label>Password</label><input type="password" id="loginPassword"
-                        placeholder="Your password" onkeydown="if(event.key==='Enter')loginUser()" /></div>
+                <div class="form-group"><label>Password</label>
+                    <div class="password-input-wrap">
+                        <input type="password" id="loginPassword" placeholder="Your password"
+                            onkeydown="if(event.key==='Enter')loginUser()" />
+                        <button type="button" class="password-toggle-btn"
+                            onclick="togglePasswordVisibility('loginPassword', this)">
+                            <svg class="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" aria-hidden="true">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
                 <div class="error-msg" id="loginError">Invalid username or password.</div>
                 <div style="text-align:right;margin-top:0.5rem;">
                     <a href="#"
@@ -330,8 +347,19 @@
                         placeholder="e.g. 0544833571" /></div>
                 <div class="form-group"><label>Email Address</label><input type="email" id="regEmail"
                         placeholder="your@email.com" /></div>
-                <div class="form-group"><label>Password</label><input type="password" id="regPassword"
-                        placeholder="Choose a password" /></div>
+                <div class="form-group"><label>Password</label>
+                    <div class="password-input-wrap">
+                        <input type="password" id="regPassword" placeholder="Choose a password" />
+                        <button type="button" class="password-toggle-btn"
+                            onclick="togglePasswordVisibility('regPassword', this)">
+                            <svg class="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" aria-hidden="true">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
                 <div class="error-msg" id="regError">Registration failed. Try again.</div>
                 <div class="success-msg" id="regSuccess">Account created! You can now login.</div>
                 <div class="form-actions">
@@ -603,6 +631,53 @@
             <div class="form-actions">
                 <button class="btn-submit" onclick="sendPasswordReset()">Send Reset</button>
                 <button class="btn-cancel" onclick="closeModal('forgotPasswordModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Set New Password Modal (shown after clicking recovery link) -->
+    <div class="modal-overlay" id="newPasswordModal">
+        <div class="modal" style="max-width:420px;">
+            <button class="modal-close" onclick="closeModal('newPasswordModal')">&#x2715;</button>
+            <svg class="modal-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                aria-hidden="true">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            </svg>
+            <h3>Set New Password</h3>
+            <p>Enter your new password below to reset your account.</p>
+            <div class="form-group"><label>New Password</label>
+                <div class="password-input-wrap">
+                    <input type="password" id="newPasswordInput" placeholder="Enter new password" />
+                    <button type="button" class="password-toggle-btn"
+                        onclick="togglePasswordVisibility('newPasswordInput', this)">
+                        <svg class="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            aria-hidden="true">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="form-group"><label>Confirm Password</label>
+                <div class="password-input-wrap">
+                    <input type="password" id="confirmPasswordInput" placeholder="Confirm new password"
+                        onkeydown="if(event.key==='Enter')updateNewPassword()" />
+                    <button type="button" class="password-toggle-btn"
+                        onclick="togglePasswordVisibility('confirmPasswordInput', this)">
+                        <svg class="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            aria-hidden="true">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="error-msg" id="newPasswordError">Error</div>
+            <div class="success-msg" id="newPasswordSuccess">Password updated successfully!</div>
+            <div class="form-actions">
+                <button class="btn-submit" onclick="updateNewPassword()">Update Password</button>
+                <button class="btn-cancel" onclick="closeModal('newPasswordModal')">Cancel</button>
             </div>
         </div>
     </div>

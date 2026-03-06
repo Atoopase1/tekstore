@@ -805,6 +805,35 @@ async function sendPasswordReset() {
     setTimeout(() => { sucEl.style.display = 'none'; closeModal('forgotPasswordModal') }, 4000);
 }
 
+/* ── Password Recovery Handler ── */
+sb.auth.onAuthStateChange(async (event, session) => {
+    if (event === 'PASSWORD_RECOVERY') {
+        // User clicked the recovery link and landed here — show the new password modal
+        openModal('newPasswordModal');
+    }
+});
+
+async function updateNewPassword() {
+    const newPass = document.getElementById('newPasswordInput').value;
+    const confirmPass = document.getElementById('confirmPasswordInput').value;
+    const errEl = document.getElementById('newPasswordError');
+    const sucEl = document.getElementById('newPasswordSuccess');
+    errEl.style.display = 'none'; sucEl.style.display = 'none';
+
+    if (!newPass || !confirmPass) { errEl.textContent = 'Please fill in both fields.'; errEl.style.display = 'block'; return }
+    if (newPass.length < 6) { errEl.textContent = 'Password must be at least 6 characters.'; errEl.style.display = 'block'; return }
+    if (newPass !== confirmPass) { errEl.textContent = 'Passwords do not match.'; errEl.style.display = 'block'; return }
+
+    const { error } = await sb.auth.updateUser({ password: newPass });
+    if (error) { errEl.textContent = 'Error: ' + error.message; errEl.style.display = 'block'; return }
+
+    sucEl.textContent = 'Password updated successfully! You can now login with your new password.';
+    sucEl.style.display = 'block';
+    document.getElementById('newPasswordInput').value = '';
+    document.getElementById('confirmPasswordInput').value = '';
+    setTimeout(() => { sucEl.style.display = 'none'; closeModal('newPasswordModal') }, 3000);
+}
+
 /* ── Cart ── */
 function saveCart() { localStorage.setItem('technoid_cart', JSON.stringify(cart)) }
 function updateCartBadge() {
@@ -859,41 +888,6 @@ function renderCart() {
     }).join('') + '</div>';
     document.getElementById('cartTotalAmount').textContent = 'GHS ' + total.toLocaleString('en', { minimumFractionDigits: 2 });
     totalRow.style.display = ''; actions.style.display = '';
-}
-function checkoutCart() {
-    if (cart.length === 0) return;
-
-    // Group items by seller
-    const sellerGroups = {};
-    cart.forEach(c => {
-        const product = products.find(p => p.id === c.id);
-        const isAdminProd = !product || !product.seller_id || parseInt(product.seller_id) === 1;
-        const phone = isAdminProd ? '0544833571' : (product && product.seller_phone ? product.seller_phone : '0544833571');
-        const sellerName = isAdminProd ? 'Technoid Store' : (product && product.seller_name ? product.seller_name : 'Seller');
-        if (!sellerGroups[phone]) sellerGroups[phone] = { phone, sellerName, items: [] };
-        sellerGroups[phone].items.push(c);
-    });
-
-    Object.values(sellerGroups).forEach(({ phone, sellerName, items }) => {
-        let total = 0;
-        const lines = items.map(c => {
-            const itemTotal = parsePrice(c.price) * c.qty;
-            total += itemTotal;
-            return '• ' + c.name + ' × ' + c.qty + '  —  ' + c.price;
-        });
-
-        const divider = '─────────────────────';
-        const msg =
-            '🛒 *ORDER FROM TEKSTORE*\n' +
-            divider + '\n' +
-            lines.join('\n') + '\n' +
-            divider + '\n' +
-            '*Total: GHS ' + total.toLocaleString('en', { minimumFractionDigits: 2 }) + '*\n\n' +
-            'Please confirm availability and share payment details. Thank you! 🙏';
-
-        const waNum = '233' + phone.replace(/^0/, '');
-        window.open('https://wa.me/' + waNum + '?text=' + encodeURIComponent(msg), '_blank');
-    });
 }
 
 function clearCart() {
@@ -1014,6 +1008,21 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+function togglePasswordVisibility(inputId, btnElement) {
+    const input = document.getElementById(inputId);
+    if (!input) return;
+
+    if (input.type === 'password') {
+        input.type = 'text';
+        btnElement.innerHTML = '<svg class="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>';
+        btnElement.style.color = 'var(--accent)';
+    } else {
+        input.type = 'password';
+        btnElement.innerHTML = '<svg class="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
+        btnElement.style.color = 'var(--text3)';
+    }
+}
+
 /* ── Init ── */
 restoreSession();
 loadProducts();
@@ -1029,3 +1038,16 @@ openModal = function (id) {
 
 // Init theme icon after DOM ready
 setThemeIcon(localStorage.getItem('technoid_theme') || 'dark');
+
+// Register Service Worker for PWA
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+            .then(registration => {
+                console.log('ServiceWorker registration successful with scope: ', registration.scope);
+            })
+            .catch(error => {
+                console.log('ServiceWorker registration failed: ', error);
+            });
+    });
+}
