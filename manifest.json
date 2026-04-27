@@ -1,0 +1,30 @@
+{
+    "name": "Tekstore",
+    "short_name": "Tekstore",
+    "description": "Ghana's trusted destination for premium phones, laptops & gadgets.",
+    "start_url": "./index.html",
+    "display": "standalone",
+    "orientation": "portrait-primary",
+    "background_color": "#0D0D0F",
+    "theme_color": "#00C2FF",
+    "icons": [
+        {
+            "src": "logo.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "logo.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "logo-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        }
+    ]
+}

@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#00C2FF">
+    <meta name="google-site-verification" content="YBfmks8MASwVGS6oxSCw3rpt5uwoOdBNQN_jsE0Topo" />
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="logo-192.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="logo-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="logo.png">
+    <title>Tekstore</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&family=Exo+2:wght@400;700;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <nav>
+        <div class="logo">TEK<span>STORE</span></div>
+
+        <!-- Desktop Nav Links -->
+        <ul class="nav-links">
+            <li><a href="#hero">Home</a></li>
+            <li><a href="#products">Shop</a></li>
+            <li><a href="#about">Services</a></li>
+        </ul>
+
+        <!-- Search Bar -->
+        <div class="nav-search">
+            <div class="search-wrap">
+                <svg class="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    aria-hidden="true">
+                    <circle cx="11" cy="11" r="8" />
+                    <path d="m21 21-4.3-4.3" />
+                </svg>
+                <input type="text" id="searchInput" class="search-input" placeholder="Search products..."
+                    autocomplete="off" />
+                <div id="searchSuggestions" class="search-suggestions"></div>
+            </div>
+        </div>
+
+        <!-- Right Side -->
+        <div class="nav-right" id="navRight">
+            <button class="desktop-theme-btn" id="desktopThemeBtn" onclick="toggleTheme()" title="Toggle theme"><svg
+                    class="theme-svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path
+                        d="M12 7a5 5 0 100 10 5 5 0 000-10zm0-3a1 1 0 011-1V1a1 1 0 01-2 0v2a1 1 0 011 1zm0 16a1 1 0 01-1 1v2a1 1 0 012 0v-2a1 1 0 01-1-1zm9-9a1 1 0 011 1h2a1 1 0 010 2h-2a1 1 0 01-1-1zm-18 0a1 1 0 01-1-1H1a1 1 0 010-2h2a1 1 0 011 1zm14.95-5.64a1 1 0 011.41 0l1.42 1.42a1 1 0 01-1.42 1.41l-1.41-1.41a1 1 0 010-1.42zM4.22 17.66a1 1 0 010 1.42l-1.42 1.41a1 1 0 01-1.41-1.41l1.41-1.42a1 1 0 011.42 0zm13.56 1.42a1 1 0 010-1.42l1.41-1.42a1 1 0 011.42 1.42l-1.42 1.41a1 1 0 01-1.41 0zM4.22 6.34a1 1 0 01-1.42 0L1.39 4.93a1 1 0 011.41-1.42L4.22 4.93a1 1 0 010 1.41z" />
+                </svg></button>
+            <button class="admin-btn adminNavBtn" onclick="handleAdminNavClick()" style="display:none;">Danger
+                Zone</button>
+            <button class="auth-btn loginNavBtn" onclick="openModal('authModal')" style="display:none;">Account</button>
+            <button class="auth-btn userNavBtn" onclick="openModal('userPanel')" style="display:none;"></button>
+            <button class="cart-btn" onclick="openModal('cartModal')" title="Shopping Cart"
+                aria-label="Shopping cart"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" aria-hidden="true">
+                    <circle cx="9" cy="21" r="1" />
+                    <circle cx="20" cy="21" r="1" />
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                </svg><span class="cart-count" id="cartCount"></span></button>
+            <!-- Hamburger -->
+            <div class="hamburger" id="hamburgerMenu" onclick="toggleMobileNav()" role="button" aria-label="Open menu"
+                tabindex="0">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Slide-in Mobile Menu -->
+    <div class="mobile-nav-overlay" id="mobileNavOverlay">
+        <div class="mobile-nav-panel">
+            <button class="mobile-nav-close" onclick="closeMobileNav()" aria-label="Close menu"><svg
+                    class="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    aria-hidden="true">
+                    <path d="M18 6 6 18M6 6l12 12" />
+                </svg></button>
+
+            <!-- Account & Theme at top -->
+            <div class="mobile-nav-top">
+                <button class="mobile-account-btn loginNavBtn" onclick="openModal('authModal'); closeMobileNav();"
+                    style="display:none;"><svg class="icon icon-sm" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                    </svg> Account</button>
+                <button class="mobile-account-btn userNavBtn" onclick="openModal('userPanel'); closeMobileNav();"
+                    style="display:none;"></button>
+                <button class="admin-btn adminNavBtn mobile-admin-btn"
+                    onclick="handleAdminNavClick(); closeMobileNav();" style="display:none;">Danger Zone</button>
+                <button class="mobile-theme-btn" id="mobileThemeBtn" onclick="toggleTheme()" title="Toggle theme"><svg
+                        class="theme-svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M12 7a5 5 0 100 10 5 5 0 000-10zm0-3a1 1 0 011-1V1a1 1 0 01-2 0v2a1 1 0 011 1zm0 16a1 1 0 01-1 1v2a1 1 0 012 0v-2a1 1 0 01-1-1zm9-9a1 1 0 011 1h2a1 1 0 010 2h-2a1 1 0 01-1-1zm-18 0a1 1 0 01-1-1H1a1 1 0 010-2h2a1 1 0 011 1zm14.95-5.64a1 1 0 011.41 0l1.42 1.42a1 1 0 01-1.42 1.41l-1.41-1.41a1 1 0 010-1.42zM4.22 17.66a1 1 0 010 1.42l-1.42 1.41a1 1 0 01-1.41-1.41l1.41-1.42a1 1 0 011.42 0zm13.56 1.42a1 1 0 010-1.42l1.41-1.42a1 1 0 011.42 1.42l-1.42 1.41a1 1 0 01-1.41 0zM4.22 6.34a1 1 0 01-1.42 0L1.39 4.93a1 1 0 011.41-1.42L4.22 4.93a1 1 0 010 1.41z" />
+                    </svg> <span class="mobile-theme-label">Light Mode</span></button>
+            </div>
+
+            <hr class="mobile-nav-divider" />
+
+            <!-- Nav Links -->
+            <ul class="mobile-nav-links">
+                <li><a href="#hero" onclick="closeMobileNav()">Home</a></li>
+                <li><a href="#products" onclick="closeMobileNav()">Shop</a></li>
+                <li><a href="#about" onclick="closeMobileNav()">Services</a></li>
+            </ul>
+
+            <!-- Logged-in user quick links -->
+            <div class="mobile-user-actions" id="mobileUserLinks" style="display:none;">
+                <hr class="mobile-nav-divider" />
+                <ul class="mobile-nav-links">
+                    <li><a href="#" onclick="event.preventDefault(); closeMobileNav(); openMyListingsView();">My
+                            Listings</a></li>
+                    <li><a href="#" onclick="event.preventDefault(); closeMobileNav(); openPostProductView();">Post
+                            Product</a></li>
+                </ul>
+            </div>
+
+
+        </div>
+    </div>
+
+    <section id="hero">
+        <div class="hero-eyebrow">Ghana's premium tech store</div>
+        <h1><span class="accent">PREMIUM</span><span class="outline">Technology</span></h1>
+        <p class="hero-desc">Shop our curated premium devices. Negotiate on WhatsApp. Pay securely with MoMo.</p>
+
+
+    </section>
+
+    <!-- ══ CAROUSEL SECTION ══ -->
+    <section id="carouselSection" class="carousel-section">
+
+      <!-- Featured Products (Replaces Categories) -->
+      <div class="carousel-block" id="featuredCarouselBlock">
+        <div class="carousel-header">
+          <h2 class="carousel-title">Featured <span>Products</span></h2>
+          <div class="carousel-nav-btns">
+            <button class="carousel-arrow" id="featPrev" aria-label="Previous products">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m15 18-6-6 6-6"/></svg>
+            </button>
+            <button class="carousel-arrow" id="featNext" aria-label="Next products">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="carousel-track-wrap">
+          <div class="carousel-track" id="featTrack">
+            <!-- Populated by JS after products load -->
+          </div>
+        </div>
+        <div class="carousel-dots" id="featDots"></div>
+      </div>
+
+    </section>
+
+    <!-- Category Navigation (dropdown main + subcategory pills) -->
+    <div class="category-nav-wrap" id="categoryNavWrap">
+        <div class="main-cat-dropdown-bar">
+            <div class="main-cat-dropdown" id="mainCatDropdown">
+                <button class="main-cat-dropdown-btn" id="mainCatDropdownBtn" onclick="toggleCatDropdown()"
+                    aria-haspopup="listbox" aria-expanded="false">
+                    <svg class="cat-dropdown-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" aria-hidden="true">
+                        <rect x="3" y="3" width="7" height="7" rx="1" />
+                        <rect x="14" y="3" width="7" height="7" rx="1" />
+                        <rect x="3" y="14" width="7" height="7" rx="1" />
+                        <rect x="14" y="14" width="7" height="7" rx="1" />
+                    </svg>
+                    <span id="mainCatDropdownLabel">All Categories</span>
+                    <svg class="cat-chevron" id="catChevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5" aria-hidden="true">
+                        <path d="m6 9 6 6 6-6" />
+                    </svg>
+                </button>
+                <div class="main-cat-dropdown-menu" id="mainCatDropdownMenu" role="listbox"
+                    aria-label="Main categories">
+                    <!-- Rendered by JS: renderCategoryNav() -->
+                </div>
+            </div>
+        </div>
+        <div class="sub-cat-bar" id="subCatBar" role="tablist" aria-label="Subcategories" style="display:none;">
+            <!-- Rendered by JS: renderCategoryNav() -->
+        </div>
+    </div>
+
+    <section id="products">
+        <div class="section-hd reveal">
+            <h2>Our <span>Products</span></h2>
+            <span class="product-count" id="productCount">0 products</span>
+        </div>
+        <div class="products-grid" id="productsGrid"></div>
+    </section>
+
+    <section id="about">
+        <div class="inner">
+            <div class="about-grid">
+                <div class="about-text reveal">
+                    <h2>About <span>Tekstore</span></h2>
+                    <p>We are your trusted tech destination in Ghana. From brand new smartphones to quality refurbished
+                        laptops, every product is verified before listing.</p>
+                    <p>Got a question? Negotiate your price, ask for bulk discounts, or request a spec check — all via
+                        WhatsApp before you pay. No pressure, no scams.</p>
+                    <div class="about-points">
+                        <div class="about-point">
+                            <div class="about-point-dot"></div>
+                            <div class="about-point-text"><strong>Negotiate Before You Buy</strong><span>Chat directly
+                                    on WhatsApp</span></div>
+                        </div>
+                        <div class="about-point">
+                            <div class="about-point-dot"></div>
+                            <div class="about-point-text"><strong>Pay via MoMo</strong><span>Secure mobile money
+                                    payment</span></div>
+                        </div>
+                        <div class="about-point">
+                            <div class="about-point-dot"></div>
+                            <div class="about-point-text"><strong>Verified Products</strong><span>All items checked and
+                                    described accurately</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="technoid-tile reveal">
+                    <h3>Technoid<span>Fix</span></h3>
+                    <p class="tagline">Need a repair, website, or logo? Book a professional service directly —
+                        electrical wiring, phone repairs, web design, Photoshop editing and more.</p>
+                    <div class="services-grid">
+                        <div class="service-item">Phone &amp; Laptop Repair <strong>Book a session</strong></div>
+                        <div class="service-item">Electrical Wiring <strong>Professional service</strong></div>
+                        <div class="service-item">Webpage Design <strong>Custom websites</strong></div>
+                        <div class="service-item">Photoshop &amp; Logo Design <strong>Creative work</strong></div>
+                    </div>
+                    <a href="https://technoidfix.netlify.app" target="_blank" class="book-btn">Book a Service at
+                        TechnoidFix</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-col">
+                <div class="f-logo">TEK<span>STORE</span></div>
+                <p class="f-desc">Ghana's trusted destination for premium phones, laptops &amp; gadgets. Negotiate on
+                    WhatsApp, pay via MoMo.</p>
+            </div>
+            <div class="footer-col">
+                <h4 class="f-heading">Quick Links</h4>
+                <ul class="f-links">
+                    <li><a href="#hero">Home</a></li>
+                    <li><a href="#products">Shop</a></li>
+                    <li><a href="#about">Services</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4 class="f-heading">Connect</h4>
+                <ul class="f-links">
+                    <li><a href="https://wa.me/233544833571" target="_blank">WhatsApp</a></li>
+                    <li><a href="https://www.facebook.com/share/185KdUEXfm/?mibextid=wwXIfr"
+                            target="_blank">Facebook</a></li>
+                    <li><a href="https://www.tiktok.com/@technoid_chris_atoopase?_r=1&amp;_t=ZS-94HTqvKrzL6"
+                            target="_blank">TikTok</a></li>
+                    <li><a href="https://www.linkedin.com/in/atoopase-christopher-technoid" target="_blank">LinkedIn</a>
+                    </li>
+                    <li><a href="https://technoidfix.netlify.app" target="_blank">TechnoidFix — Repairs &amp;
+                            Services</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <small>&copy; 2026 Tekstore. All rights reserved.</small>
+        </div>
+    </footer>
+
+    <!-- Admin Options Modal -->
+    <div class="modal-overlay" id="adminOptionsModal">
+        <div class="modal" style="max-width:360px;text-align:center;">
+            <button class="modal-close" onclick="closeModal('adminOptionsModal')">&#x2715;</button>
+            <svg class="modal-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                aria-hidden="true">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg>
+            <h3>Danger Zone</h3>
+            <p>You have full store access. Choose an action.</p>
+            <div style="display:flex;flex-direction:column;gap:0.8rem;">
+                <button class="btn-submit" style="width:100%;padding:0.9rem;" onclick="closeModal('adminOptionsModal')">
+                    Stay as Admin
+                    <span style="display:block;font-size:0.7rem;font-weight:400;opacity:0.7;margin-top:2px;">Keep all
+                        admin powers active</span>
+                </button>
+                <button class="btn-submit" style="width:100%;padding:0.9rem;background:var(--accent2);"
+                    onclick="closeModal('adminOptionsModal'); openAddProductPanel()">
+                    Add Product
+                    <span style="display:block;font-size:0.7rem;font-weight:400;opacity:0.7;margin-top:2px;">Open the
+                        product upload form</span>
+                </button>
+                <button class="btn-submit" style="width:100%;padding:0.9rem;background:#e67e22;"
+                    onclick="closeModal('adminOptionsModal'); openAdminEditProducts()">
+                    Edit Products
+                    <span style="display:block;font-size:0.7rem;font-weight:400;opacity:0.7;margin-top:2px;">Edit any
+                        product in the store</span>
+                </button>
+                <button class="btn-submit" style="width:100%;padding:0.9rem;background:#6c3fc5;"
+                    onclick="openManageUsers()">
+                    Manage Users
+                    <span style="display:block;font-size:0.7rem;font-weight:400;opacity:0.7;margin-top:2px;">View and
+                        delete registered users</span>
+                </button>
+                <button class="btn-cancel" style="width:100%;padding:0.9rem;border-color:var(--red);color:var(--red);"
+                    onclick="closeModal('adminOptionsModal'); exitAdmin()">
+                    Log Out Admin
+                    <span
+                        style="display:block;font-size:0.7rem;font-weight:400;opacity:0.7;margin-top:2px;color:var(--text3);">Remove
+                        all admin powers</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Edit Products Modal -->
+    <div class="modal-overlay" id="adminEditProductsModal">
+        <div class="modal" style="max-width:520px;">
+            <button class="modal-close" onclick="closeModal('adminEditProductsModal')">&#x2715;</button>
+            <svg class="modal-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                aria-hidden="true">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+            </svg>
+            <h3>Edit Products</h3>
+            <p>Select a product to edit its details.</p>
+            <div id="adminEditProductsList" style="max-height:400px;overflow-y:auto;margin-top:1rem;"></div>
+            <div style="margin-top:1.2rem;">
+                <button class="btn-cancel" style="width:100%;"
+                    onclick="closeModal('adminEditProductsModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Product Panel (Admin) -->
+    <div class="modal-overlay" id="adminPanel">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModal('adminPanel')">&#x2715;</button>
+            <h3>Add New Product</h3>
+            <p>Upload a product image and fill in the details.</p>
+            <div class="form-group"><label>Product Name</label><input type="text" id="newName"
+                    placeholder="e.g. Samsung Galaxy A54" /></div>
+            <div class="form-group"><label>Category</label>
+                <select id="newCategory">
+                    <optgroup label="Electronics">
+                        <option value="phone">Phones</option>
+                        <option value="laptop">Laptops</option>
+                        <option value="charger">Chargers</option>
+                        <option value="powerbank">Power Banks</option>
+                        <option value="audio">Earphones / Headphones</option>
+                        <option value="smartwatch">Smart Watches</option>
+                        <option value="speaker">Speakers</option>
+                        <option value="accessory">Computer Accessories</option>
+                        <option value="tablet">Tablets</option>
+                        <option value="other">Other Electronics</option>
+                    </optgroup>
+                    <optgroup label="Groceries">
+                        <option value="rice">Rice</option>
+                        <option value="cookingoil">Cooking Oil</option>
+                        <option value="drinks">Drinks</option>
+                    </optgroup>
+                    <optgroup label="Home Appliances">
+                        <option value="fan">Fans</option>
+                        <option value="blender">Blenders</option>
+                        <option value="kettle">Electric Kettles</option>
+                        <option value="microwave">Microwaves</option>
+                        <option value="refrigerator">Refrigerators</option>
+                    </optgroup>
+                    <optgroup label="Fashion">
+                        <option value="shoes">Shoes</option>
+                        <option value="bags">Bags</option>
+                        <option value="mens-clothing">Men's Clothing</option>
+                        <option value="womens-clothing">Women's Clothing</option>
+                        <option value="watches">Watches</option>
+                        <option value="sunglasses">Sunglasses</option>
+                    </optgroup>
+                    <optgroup label="Electricals">
+                        <option value="elec-components">Electrical Components</option>
+                        <option value="elec-tools">Electrical Tools</option>
+                    </optgroup>
+                    <optgroup label="Health &amp; Beauty">
+                        <option value="body-cream">Body Creams</option>
+                        <option value="hair-products">Hair Products</option>
+                        <option value="perfumes">Perfumes</option>
+                        <option value="shaving-kits">Shaving Kits</option>
+                        <option value="body-oil">Body Oil</option>
+                    </optgroup>
+                </select>
+            </div>
+            <div class="form-group"><label>Price (GHS)</label><input type="text" id="newPrice"
+                    placeholder="e.g. GHS 1,200" /></div>
+            <div class="form-group"><label>Short Description</label><textarea id="newDesc" rows="3"
+                    placeholder="Key specs or condition"></textarea></div>
+            <div class="form-group"><label>Stock Status</label>
+                <select id="newStock">
+                    <option value="1">In Stock</option>
+                    <option value="0">Out of Stock</option>
+                </select>
+            </div>
+            <div class="form-group"><label>Product Image</label><input type="file" id="newImage" accept="image/*"
+                    onchange="previewImg(this,'imagePreview')" />
+                <div class="img-preview-wrap"><img id="imagePreview" class="img-preview" /></div>
+            </div>
+            <div class="success-msg" id="addSuccess">Product added successfully!</div>
+            <div class="form-actions">
+                <button class="btn-submit" onclick="addProduct()">Add Product</button>
+                <button class="btn-cancel" onclick="closeModal('adminPanel')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Auth Modal (Login / Register) -->
+    <div class="modal-overlay" id="authModal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModal('authModal')">&#x2715;</button>
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">Login</button>
+                <button class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')">Register</button>
+            </div>
+            <div id="authLoginForm">
+                <h3>Welcome Back</h3>
+                <p>Login to post or manage your products.</p>
+                <button class="btn-google-signin" onclick="signInWithGoogle()" type="button">
+                    <svg class="google-icon" viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
+                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                    </svg>
+                    Continue with Google
+                </button>
+                <div class="auth-divider">
+                    <span class="auth-divider-line"></span>
+                    <span class="auth-divider-text">or</span>
+                    <span class="auth-divider-line"></span>
+                </div>
+                <div class="form-group"><label>Email or Username</label><input type="text" id="loginUsername"
+                        placeholder="Your email or username" /></div>
+                <div class="form-group"><label>Password</label>
+                    <div class="password-input-wrap">
+                        <input type="password" id="loginPassword" placeholder="Your password"
+                            onkeydown="if(event.key==='Enter')loginUser()" />
+                        <button type="button" class="password-toggle-btn"
+                            onclick="togglePasswordVisibility('loginPassword', this)">
+                            <svg class="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" aria-hidden="true">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="error-msg" id="loginError">Invalid username or password.</div>
+                <div class="auth-row-between" style="margin-top:0.75rem;">
+                    <label class="auth-remember-label">
+                        <input type="checkbox" id="loginRememberMe" class="auth-checkbox" />
+                        <span>Remember me</span>
+                    </label>
+                    <a href="#"
+                        onclick="event.preventDefault();closeModal('authModal');openModal('forgotPasswordModal')"
+                        style="color:var(--accent);font-size:0.8rem;text-decoration:none;">Forgot Password?</a>
+                </div>
+                <label class="auth-policy-label" style="margin-top:0.75rem;">
+                    <input type="checkbox" id="loginPolicyCheck" class="auth-checkbox" />
+                    <span>I agree to the <a href="privacy.html" target="_blank" class="auth-policy-link">Privacy Policy</a> and Terms of Use</span>
+                </label>
+                <div class="form-actions">
+                    <button class="btn-submit" onclick="loginUser()">Login</button>
+                    <button class="btn-cancel" onclick="closeModal('authModal')">Cancel</button>
+                </div>
+            </div>
+            <div id="authRegisterForm" style="display:none;">
+                <h3>Create Account</h3>
+                <p>Register to start selling on Tekstore.</p>
+                <button class="btn-google-signin" onclick="signInWithGoogle()" type="button">
+                    <svg class="google-icon" viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
+                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                    </svg>
+                    Continue with Google
+                </button>
+                <div class="auth-divider">
+                    <span class="auth-divider-line"></span>
+                    <span class="auth-divider-text">or</span>
+                    <span class="auth-divider-line"></span>
+                </div>
+                <div class="form-group"><label>Full Name</label><input type="text" id="regName"
+                        placeholder="Your full name" /></div>
+                <div class="form-group"><label>Username</label><input type="text" id="regUsername"
+                        placeholder="Choose a username" /></div>
+                <div class="form-group"><label>Phone / MoMo Number</label><input type="text" id="regPhone"
+                        placeholder="e.g. 0544833571" /></div>
+                <div class="form-group"><label>Email Address</label><input type="email" id="regEmail"
+                        placeholder="your@email.com" /></div>
+                <div class="form-group"><label>Password</label>
+                    <div class="password-input-wrap">
+                        <input type="password" id="regPassword" placeholder="Choose a password" />
+                        <button type="button" class="password-toggle-btn"
+                            onclick="togglePasswordVisibility('regPassword', this)">
+                            <svg class="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" aria-hidden="true">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="error-msg" id="regError">Registration failed. Try again.</div>
+                <div class="success-msg" id="regSuccess">Account created! You can now login.</div>
+                <label class="auth-policy-label" style="margin-top:0.5rem;">
+                    <input type="checkbox" id="regPolicyCheck" class="auth-checkbox" />
+                    <span>I agree to the <a href="privacy.html" target="_blank" class="auth-policy-link">Privacy Policy</a> and Terms of Use</span>
+                </label>
+                <div class="form-actions">
+                    <button class="btn-submit" onclick="registerUser()">Create Account</button>
+                    <button class="btn-cancel" onclick="closeModal('authModal')">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Sell Panel -->
+    <div class="modal-overlay" id="userPanel">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModal('userPanel')">&#x2715;</button>
+            <div class="profile-header">
+                <div class="avatar-wrap">
+                    <img id="avatarDisplay" class="avatar-img" style="display:none;" />
+                    <div id="avatarPlaceholder" class="avatar-placeholder"><svg class="icon icon-xl" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                            <circle cx="12" cy="7" r="4" />
+                        </svg></div>
+                    <label class="avatar-upload" title="Change photo"><svg class="icon icon-sm" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path
+                                d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                            <circle cx="12" cy="13" r="4" />
+                        </svg><input type="file" accept="image/*" onchange="uploadAvatar(this)" /></label>
+                </div>
+                <div class="profile-info">
+                    <div class="profile-name" id="profileDisplayName"></div>
+                    <div class="profile-handle" id="profileHandle"></div>
+                </div>
+            </div>
+            <!-- Edit Profile -->
+            <details id="editProfileSection" style="margin-bottom:1.2rem;">
+                <summary style="cursor:pointer;font-weight:700;font-size:0.9rem;color:var(--text1);padding:0.5rem 0;list-style:none;display:flex;align-items:center;gap:0.4rem;">
+                    <svg class="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    Edit Profile
+                </summary>
+                <div style="padding-top:0.8rem;display:flex;flex-direction:column;gap:0.75rem;">
+                    <div class="form-group"><label>Full Name</label><input type="text" id="profileEditName" placeholder="Your full name" /></div>
+                    <div class="form-group"><label>Phone Number</label><input type="tel" id="profileEditPhone" placeholder="e.g. 0244123456" /></div>
+                    <div class="form-group"><label>Email</label><input type="email" id="profileEditEmail" placeholder="your@email.com" /></div>
+                    <div class="error-msg" id="profileEditError" style="display:none;"></div>
+                    <div class="success-msg" id="profileEditSuccess" style="display:none;">Profile updated!</div>
+                    <button class="btn-submit" style="width:100%;" onclick="saveProfileEdits()">Save Changes</button>
+                </div>
+            </details>
+            <hr style="border:none;border-top:1px solid var(--border);margin:0 0 1.2rem;" />
+            <h3>Sell a Product</h3>
+            <div class="sell-notice"><svg class="icon icon-sm" style="margin-right:4px" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path
+                        d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                </svg> List your item for sale. Buyers will pay you directly via MoMo.</div>
+            <div class="form-group"><label>Product Name</label><input type="text" id="sellName"
+                    placeholder="e.g. iPhone 14 Pro" /></div>
+            <div class="form-group"><label>Category</label>
+                <select id="sellCategory">
+                    <optgroup label="Electronics">
+                        <option value="phone">Phones</option>
+                        <option value="laptop">Laptops</option>
+                        <option value="charger">Chargers</option>
+                        <option value="powerbank">Power Banks</option>
+                        <option value="audio">Earphones / Headphones</option>
+                        <option value="smartwatch">Smart Watches</option>
+                        <option value="speaker">Speakers</option>
+                        <option value="accessory">Computer Accessories</option>
+                        <option value="tablet">Tablets</option>
+                        <option value="other">Other Electronics</option>
+                    </optgroup>
+                    <optgroup label="Groceries">
+                        <option value="rice">Rice</option>
+                        <option value="cookingoil">Cooking Oil</option>
+                        <option value="drinks">Drinks</option>
+                    </optgroup>
+                    <optgroup label="Home Appliances">
+                        <option value="fan">Fans</option>
+                        <option value="blender">Blenders</option>
+                        <option value="kettle">Electric Kettles</option>
+                        <option value="microwave">Microwaves</option>
+                        <option value="refrigerator">Refrigerators</option>
+                    </optgroup>
+                    <optgroup label="Fashion">
+                        <option value="shoes">Shoes</option>
+                        <option value="bags">Bags</option>
+                        <option value="mens-clothing">Men's Clothing</option>
+                        <option value="womens-clothing">Women's Clothing</option>
+                        <option value="watches">Watches</option>
+                        <option value="sunglasses">Sunglasses</option>
+                    </optgroup>
+                    <optgroup label="Electricals">
+                        <option value="elec-components">Electrical Components</option>
+                        <option value="elec-tools">Electrical Tools</option>
+                    </optgroup>
+                    <optgroup label="Health &amp; Beauty">
+                        <option value="body-cream">Body Creams</option>
+                        <option value="hair-products">Hair Products</option>
+                        <option value="perfumes">Perfumes</option>
+                        <option value="shaving-kits">Shaving Kits</option>
+                        <option value="body-oil">Body Oil</option>
+                    </optgroup>
+                </select>
+            </div>
+            <div class="form-group"><label>Price</label><input type="text" id="sellPrice"
+                    placeholder="e.g. GHS 3,500" /></div>
+            <div class="form-group"><label>Description</label><textarea id="sellDesc" rows="3"
+                    placeholder="Condition, specs, etc."></textarea></div>
+            <div class="form-group"><label>Stock Status</label>
+                <select id="sellStock">
+                    <option value="1">In Stock</option>
+                    <option value="0">Out of Stock</option>
+                </select>
+            </div>
+            <div class="form-group"><label>Product Image</label><input type="file" id="sellImage" accept="image/*"
+                    onchange="previewImg(this,'sellImagePreview')" />
+                <div class="img-preview-wrap"><img id="sellImagePreview" class="img-preview" /></div>
+            </div>
+            <div class="success-msg" id="sellSuccess">Product listed successfully!</div>
+            <div class="form-actions">
+                <button class="btn-submit" onclick="userAddProduct()">List Product</button>
+                <button class="btn-cancel" onclick="logoutUser()">Logout</button>
+            </div>
+            <hr style="border:none;border-top:1px solid var(--border);margin:1.5rem 0 1rem;" />
+            <h3>My Listings</h3>
+            <div id="myListingsContainer" style="margin-bottom:1.5rem;"></div>
+        </div>
+    </div>
+
+
+
+
+    <!-- MoMo Modal -->
+    <div class="modal-overlay" id="momoModal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModal('momoModal')">&#x2715;</button>
+            <h3>Pay via MoMo</h3>
+            <p id="momoProductName" style="color:var(--accent);font-weight:600;margin-bottom:1rem;"></p>
+            <div class="momo-info-box">
+                <h4>MoMo Payment Details</h4>
+                <p id="momoDetails">Loading...</p>
+            </div>
+            <a id="momoWhatsappLink" href="#" target="_blank" class="btn-submit"
+                style="display:block;text-align:center;text-decoration:none;border-radius:8px;padding:0.85rem;font-weight:700;font-size:0.85rem;letter-spacing:0.1em;text-transform:uppercase;background:var(--accent);color:#000;margin-top:0.5rem;">Confirm
+                Order on WhatsApp</a>
+        </div>
+    </div>
+
+    <!-- Paystack Modal -->
+    <div class="modal-overlay" id="paystackModal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModal('paystackModal')">&#x2715;</button>
+            <h3>Pay with MoMo / Card</h3>
+            <p id="paystackProductLabel" style="color:var(--accent);font-weight:600;margin-bottom:0.5rem;"></p>
+            <div class="form-group"><label>Your Email</label><input type="email" id="paystackEmail"
+                    placeholder="you@example.com" /></div>
+            <div class="form-group"><label>Your Phone</label><input type="tel" id="paystackPhone"
+                    placeholder="e.g. 0244123456" /></div>
+            <div class="error-msg" id="paystackError">Please fill in all fields.</div>
+            <div class="form-actions">
+                <button class="btn-submit" onclick="initiatePaystack()">Pay Now</button>
+                <button class="btn-cancel" onclick="closeModal('paystackModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Receipt Modal -->
+    <div class="modal-overlay" id="receiptModal">
+        <div class="modal" style="max-width:580px;">
+            <button class="modal-close" onclick="closeModal('receiptModal')">&#x2715;</button>
+            <h3><svg class="icon icon-md" style="margin-right:4px" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" aria-hidden="true">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <polyline points="14 2 14 8 20 8" />
+                    <line x1="16" y1="13" x2="8" y2="13" />
+                    <line x1="16" y1="17" x2="8" y2="17" />
+                </svg> Payment Receipt</h3>
+            <p>Payment verified. Keep this receipt for your records.</p>
+            <div id="receiptContent"></div>
+            <div class="receipt-actions">
+                <button class="btn-print" onclick="printReceipt()"><svg class="icon icon-sm" style="margin-right:3px"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <polyline points="6 9 6 2 18 2 18 9" />
+                        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                        <rect x="6" y="14" width="12" height="8" />
+                    </svg> Print</button>
+                <button class="btn-download" onclick="downloadReceipt()"><svg class="icon icon-sm"
+                        style="margin-right:3px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        aria-hidden="true">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="7 10 12 15 17 10" />
+                        <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg> Download</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Not Owner Modal -->
+    <div class="modal-overlay" id="notOwnerModal">
+        <div class="modal" style="max-width:380px;text-align:center;">
+            <button class="modal-close" onclick="closeModal('notOwnerModal')">&#x2715;</button>
+            <svg class="modal-icon modal-icon-danger" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="1.5" aria-hidden="true">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
+            </svg>
+            <h3>Not Allowed</h3>
+            <p>You cannot delete someone else's product. You can only delete products <strong
+                    style="color:var(--text);">you posted</strong>.</p>
+            <button class="btn-submit" onclick="closeModal('notOwnerModal')">Got It</button>
+        </div>
+    </div>
+
+    <!-- Receipt Text Modal -->
+    <div class="modal-overlay" id="receiptTextModal">
+        <div class="modal" style="max-width:520px;">
+            <button class="modal-close" onclick="closeModal('receiptTextModal')">&#x2715;</button>
+            <h3><svg class="icon icon-md" style="margin-right:4px" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" aria-hidden="true">
+                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+                    <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+                </svg> Copy Your Receipt</h3>
+            <p>Press and hold the text below to copy, then paste into Notes or WhatsApp.</p>
+            <textarea id="receiptTextArea" rows="12" class="receipt-textarea" readonly></textarea>
+            <div class="form-actions" style="margin-top:1rem;">
+                <button class="btn-submit" onclick="selectReceiptText()">Select All</button>
+                <button class="btn-cancel" onclick="closeModal('receiptTextModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Confirm Modal -->
+    <div class="modal-overlay" id="customConfirmModal">
+        <div class="modal" style="max-width: 400px; text-align: center;">
+            <button class="modal-close" onclick="closeCustomConfirm()">&#x2715;</button>
+            <svg class="modal-icon modal-icon-warn" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="1.5" aria-hidden="true">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
+            <h3 id="confirmTitle">Confirm Action</h3>
+            <p id="confirmMessage" style="margin-bottom: 1.5rem;">Are you sure?</p>
+            <div class="form-actions" style="justify-content: center;">
+                <button class="btn-submit" id="confirmOkBtn">Confirm</button>
+                <button class="btn-cancel" onclick="closeCustomConfirm()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal (Admin) -->
+    <div class="modal-overlay" id="deleteModalAdmin">
+        <div class="modal" style="max-width: 400px; text-align: center;">
+            <button class="modal-close" onclick="closeModal('deleteModalAdmin')">&#x2715;</button>
+            <svg class="modal-icon modal-icon-danger" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="1.5" aria-hidden="true">
+                <polyline points="3 6 5 6 21 6" />
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+            </svg>
+            <h3>Delete Product</h3>
+            <p style="margin-bottom: 1.5rem;">Are you sure you want to permanently delete this product? This action
+                cannot be undone.</p>
+            <div class="form-actions" style="justify-content: center;">
+                <button class="btn-submit" style="background:var(--red);color:#fff;"
+                    onclick="confirmDeleteAdmin()">Delete</button>
+                <button class="btn-cancel" onclick="closeModal('deleteModalAdmin')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal (User/Owner) -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal" style="max-width: 400px; text-align: center;">
+            <button class="modal-close" onclick="closeModal('deleteModal')">&#x2715;</button>
+            <svg class="modal-icon modal-icon-danger" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="1.5" aria-hidden="true">
+                <polyline points="3 6 5 6 21 6" />
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+            </svg>
+            <h3>Delete Product</h3>
+            <p style="margin-bottom: 1.5rem;">Are you sure you want to permanently delete your listing? This action
+                cannot be undone.</p>
+            <div class="form-actions" style="justify-content: center;">
+                <button class="btn-submit" style="background:var(--red);color:#fff;"
+                    onclick="confirmDeleteUser()">Delete</button>
+                <button class="btn-cancel" onclick="closeModal('deleteModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manage Users Modal (Admin) -->
+    <div class="modal-overlay" id="manageUsersModal">
+        <div class="modal" style="max-width:500px;">
+            <button class="modal-close" onclick="closeModal('manageUsersModal')">&#x2715;</button>
+            <svg class="modal-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                aria-hidden="true">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+            <h3>Manage Users</h3>
+            <p>All registered users. You can delete a user and all their listings.</p>
+            <div id="userListContainer"></div>
+            <div style="margin-top:1.2rem;">
+                <button class="btn-cancel" style="width:100%;" onclick="closeModal('manageUsersModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div class="modal-overlay" id="forgotPasswordModal">
+        <div class="modal" style="max-width:420px;">
+            <button class="modal-close" onclick="closeModal('forgotPasswordModal')">&#x2715;</button>
+            <h3>Forgot Password?</h3>
+            <p>Enter your registered email. We'll send a reset link to your email.</p>
+            <div class="form-group"><label>Email Address</label><input type="email" id="resetEmail"
+                    placeholder="your@email.com" /></div>
+            <div class="error-msg" id="resetError">Error</div>
+            <div class="success-msg" id="resetSuccess">Password reset instructions sent!</div>
+            <div class="form-actions">
+                <button class="btn-submit" onclick="sendPasswordReset()">Send Reset</button>
+                <button class="btn-cancel" onclick="closeModal('forgotPasswordModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Set New Password Modal (shown after clicking recovery link) -->
+    <div class="modal-overlay" id="newPasswordModal">
+        <div class="modal" style="max-width:420px;">
+            <button class="modal-close" onclick="closeModal('newPasswordModal')">&#x2715;</button>
+            <svg class="modal-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                aria-hidden="true">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            </svg>
+            <h3>Set New Password</h3>
+            <p>Enter your new password below to reset your account.</p>
+            <div class="form-group"><label>New Password</label>
+                <div class="password-input-wrap">
+                    <input type="password" id="newPasswordInput" placeholder="Enter new password" />
+                    <button type="button" class="password-toggle-btn"
+                        onclick="togglePasswordVisibility('newPasswordInput', this)">
+                        <svg class="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            aria-hidden="true">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="form-group"><label>Confirm Password</label>
+                <div class="password-input-wrap">
+                    <input type="password" id="confirmPasswordInput" placeholder="Confirm new password"
+                        onkeydown="if(event.key==='Enter')updateNewPassword()" />
+                    <button type="button" class="password-toggle-btn"
+                        onclick="togglePasswordVisibility('confirmPasswordInput', this)">
+                        <svg class="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            aria-hidden="true">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="error-msg" id="newPasswordError">Error</div>
+            <div class="success-msg" id="newPasswordSuccess">Password updated successfully!</div>
+            <div class="form-actions">
+                <button class="btn-submit" onclick="updateNewPassword()">Update Password</button>
+                <button class="btn-cancel" onclick="closeModal('newPasswordModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Modal -->
+    <div class="modal-overlay" id="cartModal">
+        <div class="modal" style="max-width:480px;">
+            <button class="modal-close" onclick="closeModal('cartModal')">&#x2715;</button>
+            <h3><svg class="icon icon-md" style="margin-right:4px" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" aria-hidden="true">
+                    <circle cx="9" cy="21" r="1" />
+                    <circle cx="20" cy="21" r="1" />
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                </svg> Your Cart</h3>
+            <p id="cartSubtitle">Review your items before checkout.</p>
+            <div id="cartItemsList"></div>
+            <div class="cart-total" id="cartTotalRow" style="display:none;">
+                <span>Total</span>
+                <span class="total-amount" id="cartTotalAmount">GHS 0</span>
+            </div>
+            <div class="form-actions" id="cartActions" style="display:none;flex-wrap:wrap;">
+                <button class="btn-submit" style="background:#FFC107;color:#000;" onclick="checkoutCartPaystack()">Pay
+                    MoMo / Card</button>
+
+                <button class="btn-cancel" onclick="clearCart()">Clear Cart</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Spec Modal -->
+    <div class="modal-overlay" id="productSpecModal">
+        <div class="modal modal-spec">
+            <button class="modal-close" onclick="closeModal('productSpecModal')">&#x2715;</button>
+            <div id="specModalContent"></div>
+        </div>
+    </div>
+
+    <!-- Edit Listing Modal (User) -->
+    <div class="modal-overlay" id="editListingModal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModal('editListingModal')">&#x2715;</button>
+            <h3><svg class="icon icon-md" style="margin-right:4px" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" aria-hidden="true">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                </svg> Edit Listing</h3>
+            <p>Update your product details below.</p>
+            <div class="form-group"><label>Product Name</label><input type="text" id="editName"
+                    placeholder="e.g. iPhone 14 Pro" /></div>
+            <div class="form-group"><label>Category</label>
+                <select id="editCategory">
+                    <optgroup label="Electronics">
+                        <option value="phone">Phones</option>
+                        <option value="laptop">Laptops</option>
+                        <option value="charger">Chargers</option>
+                        <option value="powerbank">Power Banks</option>
+                        <option value="audio">Earphones / Headphones</option>
+                        <option value="smartwatch">Smart Watches</option>
+                        <option value="speaker">Speakers</option>
+                        <option value="accessory">Computer Accessories</option>
+                        <option value="tablet">Tablets</option>
+                        <option value="other">Other Electronics</option>
+                    </optgroup>
+                    <optgroup label="Groceries">
+                        <option value="rice">Rice</option>
+                        <option value="cookingoil">Cooking Oil</option>
+                        <option value="drinks">Drinks</option>
+                    </optgroup>
+                    <optgroup label="Home Appliances">
+                        <option value="fan">Fans</option>
+                        <option value="blender">Blenders</option>
+                        <option value="kettle">Electric Kettles</option>
+                        <option value="microwave">Microwaves</option>
+                        <option value="refrigerator">Refrigerators</option>
+                    </optgroup>
+                    <optgroup label="Fashion">
+                        <option value="shoes">Shoes</option>
+                        <option value="bags">Bags</option>
+                        <option value="mens-clothing">Men's Clothing</option>
+                        <option value="womens-clothing">Women's Clothing</option>
+                        <option value="watches">Watches</option>
+                        <option value="sunglasses">Sunglasses</option>
+                    </optgroup>
+                    <optgroup label="Electricals">
+                        <option value="elec-components">Electrical Components</option>
+                        <option value="elec-tools">Electrical Tools</option>
+                    </optgroup>
+                    <optgroup label="Health &amp; Beauty">
+                        <option value="body-cream">Body Creams</option>
+                        <option value="hair-products">Hair Products</option>
+                        <option value="perfumes">Perfumes</option>
+                        <option value="shaving-kits">Shaving Kits</option>
+                        <option value="body-oil">Body Oil</option>
+                    </optgroup>
+                </select>
+            </div>
+            <div class="form-group"><label>Price</label><input type="text" id="editPrice"
+                    placeholder="e.g. GHS 3,500" /></div>
+            <div class="form-group"><label>Description / Specs</label><textarea id="editDesc" rows="4"
+                    placeholder="Condition, specs, etc."></textarea></div>
+            <div class="form-group"><label>Stock Status</label>
+                <select id="editStock">
+                    <option value="1">In Stock</option>
+                    <option value="0">Out of Stock</option>
+                </select>
+            </div>
+            <div class="form-group"><label>Change Image (optional)</label><input type="file" id="editImage"
+                    accept="image/*" onchange="previewImg(this,'editImagePreview')" />
+                <div class="img-preview-wrap"><img id="editImagePreview" class="img-preview" /></div>
+            </div>
+            <div class="success-msg" id="editSuccess">Listing updated successfully!</div>
+            <div class="form-actions">
+                <button class="btn-submit" onclick="saveEditListing()">Save Changes</button>
+                <button class="btn-cancel" onclick="closeModal('editListingModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- SDKs -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+    <!-- App -->
+    <script src="app.js"></script>
+</body>
+
+</html>
